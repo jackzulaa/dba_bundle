@@ -1,0 +1,1357 @@
+Performance Monitoring & Tuning of Oracle RAC
+
+ 
+
+Tuning RAC database is similar to tuning a non-RAC database with some differences.
+
+ 
+
+Analysis of Performance Issues
+
+ 
+
+The analysis of performance issues in RAC involves:
+
+Normal database tuning and monitoring
+Monitoring of RAC cluster interconnect performance
+Monitoring workloads
+Monitoring RAC-specific contention
+ 
+
+Normal database performance includes SQL tuning, SGA tuning, etc.
+Monitoring of RAC cluster interconnect performance
+The most important aspect of RAC tuning is the monitoring and tuning of the global directory processes (GES and GCS). The process of the GSD communicates though the cluster interconnects. If the interconnect is not tuned, the entire cluster will fails no matter how well everything else is tuned. The major concerns are the GES (Global Enqueue Services) and GCS (Global Cache Services). The level of cluster interconnect services can be determined by monitoring GCS waits that show how well data is being transferred. The waits that need to be monitored are shown in the V$SESSION_WAIT, V$OBJ_STATS, and V$ENQUEUES . The major waits to be considered with RAC are:
+
+- Global cache busy
+
+- Buffer busy global cache
+
+- Buffer busy global CR
+
+To find the values of these waits, use the GV$SESSION_WAIT: New in 10g is the WAIT_CLASS column, which is used to restrict returned values based on 12 basic wait classes, one of which is the cluster wait class.
+
+The following wait events indicate that remotely cached blocks were safely shipped to the local instance without having been pinned, busy, or requiring a log flush and can safely be ignored.
+
+-         gc current block 2-way
+
+-         gc current block 3-way
+
+-         gc cr block 2-way
+
+-         gc cr block 3 way
+
+ 
+
+However, other statistics enable rapid identification of tables and indexes the are shared by active instances.
+
+ 
+
+SQL> SELECT inst_id, event, p1 FILE_NUMER, p2 BLOCK_NUMBER, WAIT_TIME
+
+            FROM GV$SESSION_WAIT
+
+            WHERE
+
+            EVEINT IN (‘buffer busy global cr’, ‘global cache busy’, ‘buffer busy global cache’);
+
+ 
+
+In order to find out which object corresponds to a particular file and block (usinh output from above):
+
+ 
+
+SQL> SELECT owner, segment_name, segment_type
+
+            FROM DBA_EXTENTS
+
+            WHERE
+
+            FILE_ID=9 AND 150 BETWEEN BLOCK_ID and BLOCK_ID+BLOCKS-1;
+
+ 
+
+Once the objects causing the contention are determined, they should be modified by:
+
+-Reducing the rows per block
+
+- Adjusting the block size
+
+-Modifying INITRANS and FREELISTS
+
+ 
+
+Index leaf blocks are usually the most contended objects in RAC, therefore, using a small block size can reduce intra instance contention.
+
+Contention in blocks can be measured by using the block transfer time, determined by the statistics global cache cr receive time and global cache cr blocks received. The value is determined by calculating the ratio of global cache cr block receive time to global cache cr blocks received.
+
+The value of this can be taken out of GV$SYSSTAT:
+
+ 
+
+COLUMN “AVG RECEIVE TIME (ms)” FORMAT 99999999.9
+
+COL INST_ID for 9999
+
+PROMPT GCS CR BLOCKS
+
+SELECT b1.inst_id, b2.value “RECEIVED”,
+
+B1.value “RECEIVE TIME”,
+
+((b1.VALUE / b2.value) * 10) “AVG RECEIVE TIME (ms)”
+
+FROM GV$SYSSTAT b1, GV$SYSSTAT b2
+
+WHERE b1.name= ‘global cache cr block receive time’ and
+
+B2.name=’global cache cr blocks received’ and b1.inst_id=b2.inst_id;
+
+ 
+
+INST_ID
+
+RECEIVED
+
+RECEIVE_TIME
+
+AVG RECEIVE TIME (ms)
+
+1
+
+2791
+
+3287
+
+11.8
+
+2
+
+3760
+
+7482
+
+19.9
+
+ 
+
+If the transfer time is too high, or if one of the nodes shows excessive transfer times, check the cluster interconnects using system level commands to verify if they are functioning properly. In the above select result, instance 2 exhibits an average receive time that is 69% higher than the other instance.
+
+ 
+
+The following select measures the over all latency, including that for queue, build, flush, and send time. These statistics are also found in the GV$SYSTAT>
+
+ 
+
+SQL> SELECT a.inst_id, “Instance”
+
+(a.value+b.value+c.value) / d.value “LMS Service Time”
+
+            FROM GV$SYSSTAT A,
+
+                        GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+            WHERE a.name=’global cache cr block build time AND
+
+            b.name=’global cache cr block flush time’ AND
+
+            c.name’global cache cr block send time’ AND
+
+            d.name=’global cache cr blocks serverd’ AND
+
+            b.inst_id=a.inst_id AND
+
+            c.inst_id=a.inst_id AND          
+
+            d.inst_id=a.inst_id
+
+            ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+LMS Service Time
+
+1
+
+1.07933434
+
+2
+
+.636687318
+
+ 
+
+These times should be close to equal.
+
+ 
+
+Examine individual components of the service time to determine the source of the problem.
+
+ 
+
+SQL> SELECT A.inst_id “Instance”
+
+(a.value/D.value) “Consistent read build”,
+
+(b.value/d.value) “Log flush wait”,
+
+(c.value/d.value) “Send time”
+
+            FROM GV$SYSSTAT A,
+
+                        GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+            WHERE a.name=’global cache cr block build time AND
+
+            b.name=’global cache cr block flush time’ AND
+
+            c.name’global cache cr block send time’ AND
+
+            d.name=’global cache cr blocks serverd’ AND
+
+            b.inst_id=a.inst_id AND
+
+            c.inst_id=a.inst_id AND          
+
+            d.inst_id=a.inst_id
+
+            ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Consistent Read Build
+
+Log Flush Wait
+
+Send Time
+
+1
+
+0.007344
+
+1.0505665
+
+.02203942
+
+2
+
+0.464344
+
+.7778766
+
+.07854334
+
+ 
+
+If problems are detected then the use of OS commands to pinpoint the node having difficulties:
+
+ 
+
+Netstat –l
+
+Netstats –s
+
+Sar –c
+
+Sar –q
+
+Vmstat
+
+ 
+
+These OS processes will monitor cluster interconnects for:
+
+-         Large number of processes in the run queue waiting for CPU or scheduling delays
+
+-         Platform specific OS parameter settings that affect IPC buffering or process scheduling.
+
+-         Slow, busy or faulty interconnects. In this case look for the dropped packets, retransmits or cyclic redundancy check (CRC) errors. Ensure that the network is private and inter-instance traffic is not routed through a public network.
+
+ 
+
+Undesirable Global Cache Statistics (should be near 0)
+
+ 
+
+-         Global cache blocks lost – block losses during transfers. High values indicate network problems. When using an unreliable IPC protocol such as UDP, the value of for global cache blocks lost can be non-zero. If this is the case, the ratio of ‘global cache blocks lost’ divided by ‘global cache current blocks served’ plus ‘global cache cr blocks served’ should be as small as possible.
+
+-         Global cache blocks corrupt – corrupted blocks during transfer – an IPC, hardware or network problem.
+
+An example of global_cache_blocks_sql:
+
+ 
+
+SQL> SELECT a.value “GC BLOCKS LOST1”,
+
+B.Value “GC BLOCKS CORRUPT 1”,
+
+C.Value “GC BLOCKS LOST 2”,
+
+D.value “GC BLOCKS CORRUPT 2”
+
+FROM GV$SYSSTAT A, GV$SYSSTAT B, GV$SYSSTAT C, GV$SYSSTAT D
+
+WHERE A.INST_ID=1 AND A.NAME=’global cache blocks lost’
+
+AND B.INST_ID=1 AND B.NAME=’global cache blocks corrupt’
+
+AND C.INST_ID=2 AND B.NAME=’global cache blocks lost’
+
+AND B.INST_ID=2 AND B.NAME=’global cache blocks corrupt’;
+
+ 
+
+Gc blocks lost 1
+
+Gc blocks corrupt 1
+
+Gc blocks lost 2
+
+Gs blocks corrupt 2
+
+0
+
+0
+
+652
+
+0
+
+ 
+
+Since instance 2 is showing some problems, let’s look at the raio described above:
+
+ 
+
+Gc_blocks_lost.sql
+
+ 
+
+SQL> SELECT a.inst_id “INSTANCE”, a.value “GC BLOCKS LOST”,
+
+B.VALUE “GC CUR BLOCKS SERVED”,
+
+C.VALUE “GC CR BLOCKS SERVED”,
+
+A.VALUE/(B.VALUE+C>VALUE) RATIO
+
+FROM GV$SYSSTAT A, GV$SYSSTAT B, GV$SYSSTAT C
+
+WHERE A.NAME=’global cache blocks lost’ AND
+
+B.NAME=’global cache current blocks served’ AND
+
+C.NAME=’global cache cr blocks served’ AND
+
+B.INST_D=A.INST_ID
+
+C.INST_ID=A.INST_ID;
+
+ 
+
+Instance
+
+Gc blocks lost
+
+Gc cur blocks served
+
+Gc blocks served
+
+RATIO
+
+1
+
+0
+
+3923
+
+2734
+
+0
+
+2
+
+652
+
+3008
+
+4380
+
+0.0882512218
+
+ 
+
+Investigation showed that the TCP receive and send buffers on instance 2 were set at 64K. Since it is an 8K block size instance with a db_file_multiblock_read_count of 16, because the system was using full table scans resulting in a read of 128K. In addition, the actual TCP buffer area was set to a small number. Setting these values for the TCP receive and send buffers is an OS specific command. Check out the Home.
+
+ 
+
+ 
+
+Monitoring Current Blocks
+
+ 
+
+In addition to cr blocks, we are also concerned about RAC current blocks. The average latency for a current block is calculated:
+
+ 
+
+Current_blocks.sql
+
+ 
+
+SQL> COLUMN “AVG RECEIVE TIME (ms)” FORMAT 99999999.9
+
+COL inst_id for 9999
+
+PROMPT GCS CURRENT BLOCKS
+
+SELECT bq.isnt_id, b2.value “received”,
+
+B1.value “RECEIVE TIME”,
+
+((b1.value / b2.value) * 10) “AVG RECEIVE TIME (ms)”
+
+GV$SYSSTAT b1, GV$SYSSTAT b2
+
+WHERE b1.name=’global cache current block receive time’ and
+
+B2.name=’global cache current blocks received’ and b1.inst_id=b2.inst_id;
+
+ 
+
+INST_ID
+
+RECEIVED
+
+RECEIVE TIME AVG
+
+RECEIVE TIME (ms)
+
+1
+
+22694
+
+68999
+
+30.4
+
+2
+
+23931
+
+42090
+
+17.6
+
+ 
+
+The service time for receiving a current block is calculated in a similar fashion except there is a pin time instead ofbuild time:
+
+ 
+
+Service_time.sql
+
+ 
+
+SQL> SELECT a.inst_id “Instance”,
+
+(a.    value+b.value+c.value) / d.value “Current blk service time”
+
+FROM GV$SYSSTAT A,
+
+GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+WHERE a.name=’global cache current block pin time’ AND
+
+b.name=’global cache current block flush time’ AND
+
+c.name=’global cache concurrent block send time’ AND
+
+d.name=’global cache concurrent blocks served’ AND
+
+b.inst_id=a.inst_id
+
+AND c.inst_id=a.inst_id
+
+AND d.inst_id=a.inst_id
+
+ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Current blk service time
+
+1
+
+1.18461603
+
+2
+
+1.63125637
+
+ 
+
+Instance 2 is requiring more time to service current blocks, how is the problem determined? The overall service time can be decomposed to determine where the area concern lies:
+
+ 
+
+Block_pin.sql
+
+ 
+
+SQL> SELECT
+
+a.inst_id “Instance”,
+
+(a.value/d.value) “Current block pin”,
+
+(c.value/d.value) “Send time”
+
+FROM GV$SYSSTAT A,
+
+GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+WHERE a.name=’global cache current block build time’ AND
+
+b.name=’global cache current block flush time’ AND
+
+c.name=’global cache concurrent block send time’ AND
+
+d.name=’global cache concurrent blocks served’ AND
+
+b.inst_id=a.inst_id
+
+AND c.inst_id=a.inst_id
+
+AND d.inst_id=a.inst_id
+
+ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Current block pin
+
+Log flush wait
+
+Send time
+
+1
+
+.69366887
+
+.472058762
+
+.018196236
+
+2
+
+1.07740715
+
+.480549199
+
+.072346418
+
+ 
+
+In most cases most of the time difference comes from the pin time for the current block in instance 2. High pin times can indicate problems at the I/O interface level.
+
+ 
+
+A final set of statistics deals with the average global cache convert time, and the average global cache get times. Let’s look at a select to get this information from the RAC database.
+
+ 
+
+Cache_conv.sql
+
+ 
+
+SQL> SELECT a.inst_id “Instance”,
+
+a.value/b.value “Avg cache conv time”,
+
+c.value/d.value “Avg cache get time”,
+
+e.value “gc convert timeouts”
+
+FROM GV$SYSSTAT A,
+
+GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D,
+
+GV$SYSSTAT E
+
+WHERE a.name=’global cache convert time’ AND
+
+b.name=’global cache converts’ AND
+
+c.name=’global cache get time’ AND
+
+d.name=’global cache gets’ AND
+
+e.name=’global cache convert timeouts’ AND
+
+b.inst_id=a.inst_id
+
+AND c.inst_id=a.inst_id
+
+AND d.inst_id=a.inst_id
+
+AND e.inst_id=a.inst_id
+
+ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Avg cache conv time
+
+Avg cache get time
+
+Gc convert timeouts
+
+1
+
+1.858112072
+
+.981296356
+
+0
+
+2
+
+1.659475283
+
+.627444287
+
+0
+
+ 
+
+So, for this database instance1 has the highest convert and get times, as expected, since it is converting and getting from instance 2, which is the slow instance. However, none of the times is excessive (>10-20 ms).
+
+ 
+
+Some things to consider about these values are:
+
+ 
+
+-         High convert times indicate excessive global concurrency requirements, in other words, the instances are swapping a lot of blocks over the interconnect.
+
+-         Large values of rapid increases in the gets, converts or average times indicate GCS contention.
+
+-         Latencies for a resource operations may be high due to excessive system loads.
+
+-         Use the GV$SYSTEM_EVENT view to review the time_waited statistics for various GCS events if the get or convert times become significant.
+
+-         Values other than 0 for the GC conversion timeouts, indicates system contention or congestion. Timeouts should not occur and indicate a serious performance problem.
+
+ 
+
+ 
+
+ 
+
+Performance Monitoring & Tuning of RAC
+
+ 
+
+Tuning RAC database is similar to tuning a non-RAC database with some differences.
+
+ 
+
+Analysis of Performance Issues
+
+ 
+
+The analysis of performance issues in RAC involves:
+
+Normal database tuning and monitoring
+Monitoring of RAC cluster interconnect performance
+Monitoring workloads
+Monitoring RAC-specific contention
+ 
+
+Normal database performance includes SQL tuning, SGA tuning, etc.
+Monitoring of RAC cluster interconnect performance
+The most important aspect of RAC tuning is the monitoring and tuning of the global directory processes (GES and GCS). The process of the GSD communicates though the cluster interconnects. If the interconnect is not tuned, the entire cluster will fails no matter how well everything else is tuned. The major concerns are the GES (Global Enqueue Services) and GCS (Global Cache Services). The level of cluster interconnect services can be determined by monitoring GCS waits that show how well data is being transferred. The waits that need to be monitored are shown in the V$SESSION_WAIT, V$OBJ_STATS, and V$ENQUEUES . The major waits to be considered with RAC are:
+
+- Global cache busy
+
+- Buffer busy global cache
+
+- Buffer busy global CR
+
+To find the values of these waits, use the GV$SESSION_WAIT: New in 10g is the WAIT_CLASS column, which is used to restrict returned values based on 12 basic wait classes, one of which is the cluster wait class.
+
+The following wait events indicate that remotely cached blocks were safely shipped to the local instance without having been pinned, busy, or requiring a log flush and can safely be ignored.
+
+-         gc current block 2-way
+
+-         gc current block 3-way
+
+-         gc cr block 2-way
+
+-         gc cr block 3 way
+
+ 
+
+However, other statistics enable rapid identification of tables and indexes the are shared by active instances.
+
+ 
+
+SQL> SELECT inst_id, event, p1 FILE_NUMER, p2 BLOCK_NUMBER, WAIT_TIME
+
+            FROM GV$SESSION_WAIT
+
+            WHERE
+
+            EVEINT IN (‘buffer busy global cr’, ‘global cache busy’, ‘buffer busy global cache’);
+
+ 
+
+In order to find out which object corresponds to a particular file and block (usinh output from above):
+
+ 
+
+SQL> SELECT owner, segment_name, segment_type
+
+            FROM DBA_EXTENTS
+
+            WHERE
+
+            FILE_ID=9 AND 150 BETWEEN BLOCK_ID and BLOCK_ID+BLOCKS-1;
+
+ 
+
+Once the objects causing the contention are determined, they should be modified by:
+
+-Reducing the rows per block
+
+- Adjusting the block size
+
+-Modifying INITRANS and FREELISTS
+
+ 
+
+Index leaf blocks are usually the most contended objects in RAC, therefore, using a small block size can reduce intra instance contention.
+
+Contention in blocks can be measured by using the block transfer time, determined by the statistics global cache cr receive time and global cache cr blocks received. The value is determined by calculating the ratio of global cache cr block receive time to global cache cr blocks received.
+
+The value of this can be taken out of GV$SYSSTAT:
+
+ 
+
+COLUMN “AVG RECEIVE TIME (ms)” FORMAT 99999999.9
+
+COL INST_ID for 9999
+
+PROMPT GCS CR BLOCKS
+
+SELECT b1.inst_id, b2.value “RECEIVED”,
+
+B1.value “RECEIVE TIME”,
+
+((b1.VALUE / b2.value) * 10) “AVG RECEIVE TIME (ms)”
+
+FROM GV$SYSSTAT b1, GV$SYSSTAT b2
+
+WHERE b1.name= ‘global cache cr block receive time’ and
+
+B2.name=’global cache cr blocks received’ and b1.inst_id=b2.inst_id;
+
+ 
+
+INST_ID
+
+RECEIVED
+
+RECEIVE_TIME
+
+AVG RECEIVE TIME (ms)
+
+1
+
+2791
+
+3287
+
+11.8
+
+2
+
+3760
+
+7482
+
+19.9
+
+ 
+
+If the transfer time is too high, or if one of the nodes shows excessive transfer times, check the cluster interconnects using system level commands to verify if they are functioning properly. In the above select result, instance 2 exhibits an average receive time that is 69% higher than the other instance.
+
+ 
+
+The following select measures the over all latency, including that for queue, build, flush, and send time. These statistics are also found in the GV$SYSTAT>
+
+ 
+
+SQL> SELECT a.inst_id, “Instance”
+
+(a.value+b.value+c.value) / d.value “LMS Service Time”
+
+            FROM GV$SYSSTAT A,
+
+                        GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+            WHERE a.name=’global cache cr block build time AND
+
+            b.name=’global cache cr block flush time’ AND
+
+            c.name’global cache cr block send time’ AND
+
+            d.name=’global cache cr blocks serverd’ AND
+
+            b.inst_id=a.inst_id AND
+
+            c.inst_id=a.inst_id AND          
+
+            d.inst_id=a.inst_id
+
+            ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+LMS Service Time
+
+1
+
+1.07933434
+
+2
+
+.636687318
+
+ 
+
+These times should be close to equal.
+
+ 
+
+Examine individual components of the service time to determine the source of the problem.
+
+ 
+
+SQL> SELECT A.inst_id “Instance”
+
+(a.value/D.value) “Consistent read build”,
+
+(b.value/d.value) “Log flush wait”,
+
+(c.value/d.value) “Send time”
+
+            FROM GV$SYSSTAT A,
+
+                        GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+            WHERE a.name=’global cache cr block build time AND
+
+            b.name=’global cache cr block flush time’ AND
+
+            c.name’global cache cr block send time’ AND
+
+            d.name=’global cache cr blocks serverd’ AND
+
+            b.inst_id=a.inst_id AND
+
+            c.inst_id=a.inst_id AND          
+
+            d.inst_id=a.inst_id
+
+            ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Consistent Read Build
+
+Log Flush Wait
+
+Send Time
+
+1
+
+0.007344
+
+1.0505665
+
+.02203942
+
+2
+
+0.464344
+
+.7778766
+
+.07854334
+
+ 
+
+If problems are detected then the use of OS commands to pinpoint the node having difficulties:
+
+ 
+
+Netstat –l
+
+Netstats –s
+
+Sar –c
+
+Sar –q
+
+Vmstat
+
+ 
+
+These OS processes will monitor cluster interconnects for:
+
+-         Large number of processes in the run queue waiting for CPU or scheduling delays
+
+-         Platform specific OS parameter settings that affect IPC buffering or process scheduling.
+
+-         Slow, busy or faulty interconnects. In this case look for the dropped packets, retransmits or cyclic redundancy check (CRC) errors. Ensure that the network is private and inter-instance traffic is not routed through a public network.
+
+ 
+
+Undesirable Global Cache Statistics (should be near 0)
+
+ 
+
+-         Global cache blocks lost – block losses during transfers. High values indicate network problems. When using an unreliable IPC protocol such as UDP, the value of for global cache blocks lost can be non-zero. If this is the case, the ratio of ‘global cache blocks lost’ divided by ‘global cache current blocks served’ plus ‘global cache cr blocks served’ should be as small as possible.
+
+-         Global cache blocks corrupt – corrupted blocks during transfer – an IPC, hardware or network problem.
+
+An example of global_cache_blocks_sql:
+
+ 
+
+SQL> SELECT a.value “GC BLOCKS LOST1”,
+
+B.Value “GC BLOCKS CORRUPT 1”,
+
+C.Value “GC BLOCKS LOST 2”,
+
+D.value “GC BLOCKS CORRUPT 2”
+
+FROM GV$SYSSTAT A, GV$SYSSTAT B, GV$SYSSTAT C, GV$SYSSTAT D
+
+WHERE A.INST_ID=1 AND A.NAME=’global cache blocks lost’
+
+AND B.INST_ID=1 AND B.NAME=’global cache blocks corrupt’
+
+AND C.INST_ID=2 AND B.NAME=’global cache blocks lost’
+
+AND B.INST_ID=2 AND B.NAME=’global cache blocks corrupt’;
+
+ 
+
+Gc blocks lost 1
+
+Gc blocks corrupt 1
+
+Gc blocks lost 2
+
+Gs blocks corrupt 2
+
+0
+
+0
+
+652
+
+0
+
+ 
+
+Since instance 2 is showing some problems, let’s look at the raio described above:
+
+ 
+
+Gc_blocks_lost.sql
+
+ 
+
+SQL> SELECT a.inst_id “INSTANCE”, a.value “GC BLOCKS LOST”,
+
+B.VALUE “GC CUR BLOCKS SERVED”,
+
+C.VALUE “GC CR BLOCKS SERVED”,
+
+A.VALUE/(B.VALUE+C>VALUE) RATIO
+
+FROM GV$SYSSTAT A, GV$SYSSTAT B, GV$SYSSTAT C
+
+WHERE A.NAME=’global cache blocks lost’ AND
+
+B.NAME=’global cache current blocks served’ AND
+
+C.NAME=’global cache cr blocks served’ AND
+
+B.INST_D=A.INST_ID
+
+C.INST_ID=A.INST_ID;
+
+ 
+
+Instance
+
+Gc blocks lost
+
+Gc cur blocks served
+
+Gc blocks served
+
+RATIO
+
+1
+
+0
+
+3923
+
+2734
+
+0
+
+2
+
+652
+
+3008
+
+4380
+
+0.0882512218
+
+ 
+
+Investigation showed that the TCP receive and send buffers on instance 2 were set at 64K. Since it is an 8K block size instance with a db_file_multiblock_read_count of 16, because the system was using full table scans resulting in a read of 128K. In addition, the actual TCP buffer area was set to a small number. Setting these values for the TCP receive and send buffers is an OS specific command. Check out the http://grigorian.tech.
+
+ 
+
+ 
+
+Monitoring Current Blocks
+
+ 
+
+In addition to cr blocks, we are also concerned about RAC current blocks. The average latency for a current block is calculated:
+
+ 
+
+Current_blocks.sql
+
+ 
+
+SQL> COLUMN “AVG RECEIVE TIME (ms)” FORMAT 99999999.9
+
+COL inst_id for 9999
+
+PROMPT GCS CURRENT BLOCKS
+
+SELECT bq.isnt_id, b2.value “received”,
+
+B1.value “RECEIVE TIME”,
+
+((b1.value / b2.value) * 10) “AVG RECEIVE TIME (ms)”
+
+GV$SYSSTAT b1, GV$SYSSTAT b2
+
+WHERE b1.name=’global cache current block receive time’ and
+
+B2.name=’global cache current blocks received’ and b1.inst_id=b2.inst_id;
+
+ 
+
+INST_ID
+
+RECEIVED
+
+RECEIVE TIME AVG
+
+RECEIVE TIME (ms)
+
+1
+
+22694
+
+68999
+
+30.4
+
+2
+
+23931
+
+42090
+
+17.6
+
+ 
+
+The service time for receiving a current block is calculated in a similar fashion except there is a pin time instead ofbuild time:
+
+ 
+
+Service_time.sql
+
+ 
+
+SQL> SELECT a.inst_id “Instance”,
+
+(a.    value+b.value+c.value) / d.value “Current blk service time”
+
+FROM GV$SYSSTAT A,
+
+GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+WHERE a.name=’global cache current block pin time’ AND
+
+b.name=’global cache current block flush time’ AND
+
+c.name=’global cache concurrent block send time’ AND
+
+d.name=’global cache concurrent blocks served’ AND
+
+b.inst_id=a.inst_id
+
+AND c.inst_id=a.inst_id
+
+AND d.inst_id=a.inst_id
+
+ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Current blk service time
+
+1
+
+1.18461603
+
+2
+
+1.63125637
+
+ 
+
+Instance 2 is requiring more time to service current blocks, how is the problem determined? The overall service time can be decomposed to determine where the area concern lies:
+
+ 
+
+Block_pin.sql
+
+ 
+
+SQL> SELECT
+
+a.inst_id “Instance”,
+
+(a.value/d.value) “Current block pin”,
+
+(c.value/d.value) “Send time”
+
+FROM GV$SYSSTAT A,
+
+GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D
+
+WHERE a.name=’global cache current block build time’ AND
+
+b.name=’global cache current block flush time’ AND
+
+c.name=’global cache concurrent block send time’ AND
+
+d.name=’global cache concurrent blocks served’ AND
+
+b.inst_id=a.inst_id
+
+AND c.inst_id=a.inst_id
+
+AND d.inst_id=a.inst_id
+
+ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Current block pin
+
+Log flush wait
+
+Send time
+
+1
+
+.69366887
+
+.472058762
+
+.018196236
+
+2
+
+1.07740715
+
+.480549199
+
+.072346418
+
+ 
+
+In most cases most of the time difference comes from the pin time for the current block in instance 2. High pin times can indicate problems at the I/O interface level.
+
+ 
+
+A final set of statistics deals with the average global cache convert time, and the average global cache get times. Let’s look at a select to get this information from the RAC database.
+
+ 
+
+Cache_conv.sql
+
+ 
+
+SQL> SELECT a.inst_id “Instance”,
+
+a.value/b.value “Avg cache conv time”,
+
+c.value/d.value “Avg cache get time”,
+
+e.value “gc convert timeouts”
+
+FROM GV$SYSSTAT A,
+
+GV$SYSSTAT B,
+
+GV$SYSSTAT C,
+
+GV$SYSSTAT D,
+
+GV$SYSSTAT E
+
+WHERE a.name=’global cache convert time’ AND
+
+b.name=’global cache converts’ AND
+
+c.name=’global cache get time’ AND
+
+d.name=’global cache gets’ AND
+
+e.name=’global cache convert timeouts’ AND
+
+b.inst_id=a.inst_id
+
+AND c.inst_id=a.inst_id
+
+AND d.inst_id=a.inst_id
+
+AND e.inst_id=a.inst_id
+
+ORDER BY a.inst_id;
+
+ 
+
+Instance
+
+Avg cache conv time
+
+Avg cache get time
+
+Gc convert timeouts
+
+1
+
+1.858112072
+
+.981296356
+
+0
+
+2
+
+1.659475283
+
+.627444287
+
+0
+
+ 
+
+So, for this database instance1 has the highest convert and get times, as expected, since it is converting and getting from instance 2, which is the slow instance. However, none of the times is excessive (>10-20 ms).
+
+ 
+
+Some things to consider about these values are:
+
+ 
+
+-         High convert times indicate excessive global concurrency requirements, in other words, the instances are swapping a lot of blocks over the interconnect.
+
+-         Large values of rapid increases in the gets, converts or average times indicate GCS contention.
+
+-         Latencies for a resource operations may be high due to excessive system loads.
+
+-         Use the GV$SYSTEM_EVENT view to review the time_waited statistics for various GCS events if the get or convert times become significant.
+
+-         Values other than 0 for the GC conversion timeouts, indicates system contention or congestion. Timeouts should not occur and indicate a serious performance problem.
+
+ 
+
+1
