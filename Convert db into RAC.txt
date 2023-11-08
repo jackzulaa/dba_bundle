@@ -75,6 +75,6 @@ select max(sequence#),thread# from v$archived_log group by thread#;
 
 
 
-ohup $ORACLE_HOME/bin/rman target sys/Phgt3dcxW@FINPREPROD auxiliary sys/Phgt3dcxW@FINPREDR  cmdfile=~/duplicate_FINPREPROD_standby.rman | tee ~/duplicate_standby.log 2>&1 &
+ohup $ORACLE_HOME/bin/rman target sys/@FINPREPROD auxiliary sys/@FINPREDR  cmdfile=~/duplicate_FINPREPROD_standby.rman | tee ~/duplicate_standby.log 2>&1 &
   995  2023-11-07.16:31:39 ps -ef | grep pmon
   996  2023-11-07.16:31:49 cd $ORACLE_SID
