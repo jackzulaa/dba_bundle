@@ -1,0 +1,40 @@
+Creating Deleting and Modifying Services in Oracle RAC
+/ORACLE RAC /Creating Deleting and Modifying Services in Oracle RAC
+ March 5, 2018  Jagruti Jasleniya  ORACLE RAC
+1.Creating Service in Oracle RAC :
+
+Step 1: To create a service in Oracle RAC
+
+[oracle@rac1 ~]$ srvctl add service -d orcl -s myservice -r orcl1 -a orcl2 -P BASIC
+Here I have created service named myservice with preferred instance orcl1 and available instance orcl2.
+
+
+[oracle@rac1 ~]$ srvctl status service -d orcl -s myservice
+Service myservice is not running.
+We can see here service is not running. By default, service is not started. We need to start it
+
+[oracle@rac1 ~]$ srvctl start service -d orcl -s myservice
+Now, lets check the status of service :
+
+[oracle@rac1 ~]$ srvctl status service -d orcl -s myservice
+Service myservice is running on instance(s) orcl1
+[oracle@rac1 ~]$
+Check service configuration :
+
+[oracle@rac1 ~]$ srvctl config service -d orcl -s myservice
+
+2. Modifying service 
+
+[oracle@rac1 ~]$ srvctl modify service -d orcl -s myservice -P NONE
+Now let’s check service with config command
+
+[oracle@rac1 ~]$ srvctl config service -d orcl -s myservice
+
+3. Deleting Service :
+
+[oracle@rac1 ~]$ srvctl remove service -d orcl -s myservice
+PRCR-1025 : Resource ora.orcl.myservice.svc is still running
+We got an error while deleting service, as service is still running on the orcl1 instance. So we need to first stop it and then try removing it.
+
+[oracle@rac1 ~]$ srvctl stop service -d orcl -s myservice
+[oracle@rac1 ~]$ srvctl remove service -d orcl -s myservice

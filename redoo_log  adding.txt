@@ -1,0 +1,38 @@
+ select group#, status, bytes/1024/1024 mb from v$log;
+ 
+column group# format 99999;
+column status format a10;
+column mb format 99999;
+select group#, status, bytes/1024/1024 mb from v$log;
+
+
+
+
+SQL> alter system checkpoint;
+
+SQL> select group#, status, bytes/1024/1024 mb from v$log;
+
+
+
+SQL> alter database add logfile group 14 ('+DATAHCDG8','+FRAHCDG8') size 2g, group 15 ('+DATAHCDG8','+FRAHCDG8') size 2g, group 16 ('+DATAHCDG8','+FRAHCDG8') size 2g;
+
+SQL> select group#, status, bytes/1024/1024 mb from v$log
+
+
+
+ alter database drop logfile group 3;
+ 
+ 
+ 
+ 
+SELECT
+a.GROUP#,
+a.THREAD#,
+a.SEQUENCE#,
+a.ARCHIVED,
+a.STATUS,
+b.MEMBER AS REDOLOG_FILE_NAME,
+(a.BYTES/1024/1024) AS SIZE_MB
+FROM v$log a
+JOIN v$logfile b ON a.Group#=b.Group#
+ORDER BY a.GROUP#;

@@ -1,0 +1,82 @@
+Query to Check Table Lock in Oracle Database
+Query 1: To find sid, serial# and process of locked object.
+
+select a.sid||'|'|| a.serial#||'|'|| a.process
+ from v$session a, v$locked_object b, dba_objects c
+ where b.object_id = c.object_id
+ and a.sid = b.session_id
+ and OBJECT_NAME=upper('&TABLE_NAME');
+
+ Note: if you don't have dba_objects privilege replace it by user_objects.
+In RAC use GV$locked_object 
+Query 2: To find process holding the lock by passing table name.
+
+select distinct a.process
+ from gv$session a, gv$locked_object b, dba_objects c
+ where b.object_id = c.object_id
+ and a.sid = b.session_id ;
+ and OBJECT_NAME=upper('USERSESSIONDATA');
+ 
+
+ Note: if you don't have dba_objects privilege replace it by user_objects.
+In RAC use GV$locked_object 
+QUERY 3: To find blocking locks into the database.
+
+select 
+    (select username from v$session where sid=a.sid) blocker,
+    a.sid,
+    ' is blocking ',
+    (select username from v$session where sid=b.sid) blockee,
+    b.sid
+ from 
+    v$lock a, 
+    v$lock b
+ where 
+    a.block = 1
+ and 
+    b.request > 0
+ and 
+    a.id1 = b.id1
+ and 
+    a.id2 = b.id2;
+QUERY 4: To find blocking session and type of lock.
+
+select l1.inst_id,l1.sid, ' IS BLOCKING ', l2.sid,l1.type,l2.type,l1.lmode,l2.lmode,l2.inst_id
+ from gv$lock l1, gv$lock l2
+ where l1.block =1 and l2.request > 0
+ and l1.id1=l2.id1
+ and l1.id2=l2.id2; 
+QUERY 5: To get the detailed information in RAC.
+
+SELECT 'Instance '||s1.INST_ID||' '|| s1.username || '@' || s1.machine
+    || ' ( SID=' || s1.sid || ','|| s1.serial#||s1.status||  '  )  is blocking '
+    || s2.username || '@' || s2.machine || ' ( SID=' || s2.sid || ' ) ' ||s2.sql_id
+     FROM gv$lock l1, gv$session s1, gv$lock l2, gv$session s2
+    WHERE s1.sid=l1.sid AND
+     s1.inst_id=l1.inst_id AND
+     s2.sid=l2.sid AND
+     s2.inst_id=l2.inst_id AND
+     l1.BLOCK=1 AND
+    l2.request > 0 AND
+    l1.id1 = l2.id1 AND
+    l2.id2 = l2.id2 ;
+	
+	
+				  FIMASTER.USERSESSIONDATA
+	
+	
+How to kill blocking sessions.
+To find sql_id from sid
+SQL> select sql_id from v$session where sid=&sid;
+
+To find sql_full text from sql_id
+SQL > select sql_fulltext from gv$sql where sql_id ="&SLQ_ID";
+
+To kill sessions:
+SQL> alter session kill session 'sid,serial#' immediate;
+
+
+
+
+select c.owner,c.object_name,c.object_type,b.sid,b.serial#, b.status,b.osuser,b.machine from v$locked_object a, v$session b,dba_objects c  where b.sid=a.session_id  and a.OBJECT_ID=c.OBJECT_ID ;
+

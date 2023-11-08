@@ -1,0 +1,80 @@
+alter session set session_cached_cursors=1000;
+
+
+
+*.cluster_database_instances=2
+*.cluster_database=true
+*.remote_listener='copkdrcbssoa-scan:1581'
+CBSTIBDR1.instance_number=1
+CBSTIBDR2.instance_number=2
+CBSTIBDR1.thread=1
+CBSTIBDR2.thread=2
+CBSTIBDR1.undo_tablespace='UNDOTBS1'
+CBSTIBDR2.undo_tablespace='UNDOTBS2'
+
+
+create undo tablespace UNDOTBS2 datafile '+DATA6' size 200M;
+
+
+[oracle@orarac1]$ export ORACLE_SID=CBSTIBDR1
+[oracle@orarac1]$ export ORACLE_HOME=
+[oracle@orarac1]$ sqlplus /nolog
+
+
+[oracle@orarac1]$ srvctl add database -d CBSTIBDR -o /u01/app/copdbmgr/product/19.0.0.0/dbhome_1
+[oracle@orarac1]$ srvctl add instance -d CBSTIBDR -i CBSTIBDR1 -n copkdrcbssoa01
+[oracle@orarac1]$ srvctl add instance -d CBSTIBDR -i CBSTIBDR2 -n copkdrcbssoa02
+
+
+
+[oracle@orarac1]$ srvctl stop database -d CBSTIBDR 
+select * from v$active_instances
+
+SQL> create spfile='+DATA6/spfileCBSTIBDR.ora' from pfile;
+Restart the database in order to take effect of spfile.:
+
+[oracle@orarac1]$ srvctl stop instance  -d CBSTIBDR
+[oracle@orarac1]$ srvctl start database -d CBSTIBDR
+
+
+
+
+alter database add logfile thread 2 group 3 ('+DATA’,'+FLASH’) size 50m reuse;
+ 
+Database altered.
+SYS@ORADB> alter database add logfile thread 2 group 4 ('+DATA’,'+FLASH’) size 50m reuse;
+ 
+Database altered.
+ 
+SYS@ORADB>  alter database enable public thread 2;
+ 
+Database altered.
+
+
+
+
+
+
+alter system set log_archive_dest_state_2=defer;
+
+alter system set log_Archive_dest_state_2=enable;
+
+alter system switch logfile;
+
+select dest_id,error,status from v$archive_dest where dest_id='log_archive_dest_state_2';
+
+archive log list;
+
+select max(sequence#),thread# from v$log_history group by thread#;
+
+@standby,
+
+select process,sequence#,thread#,status from v$managed_standby;
+
+select max(sequence#),thread# from v$archived_log group by thread#;
+
+
+
+ohup $ORACLE_HOME/bin/rman target sys/Phgt3dcxW@FINPREPROD auxiliary sys/Phgt3dcxW@FINPREDR  cmdfile=~/duplicate_FINPREPROD_standby.rman | tee ~/duplicate_standby.log 2>&1 &
+  995  2023-11-07.16:31:39 ps -ef | grep pmon
+  996  2023-11-07.16:31:49 cd $ORACLE_SID

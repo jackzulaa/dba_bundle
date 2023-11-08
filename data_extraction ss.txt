@@ -1,0 +1,68 @@
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC001_COPKE_10_tst.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0001_COPKE_extract_tst_scrpt.txt
+
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC001_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC002_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC003_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC004_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC005_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC006_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC008_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RC009_COPKE_extract_scrpt_static.txt
+
+
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CC001_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CC002_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CC003_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CC005_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CC007_COPKE_extract_scrpt_static.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CC008_COPKE_extract_scrpt_static.txt
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS001_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS002_COPKE_extract_scrpt.txt
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS005_CAA_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS005_SBA_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS005_ODA_extract_scrpt.txt 
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @/u01/extracts/FINCORE/scripts/splitscrpt/CS004/CS004_COPKE_extract.sql
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS015_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS016_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS007_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS010_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @CS013_COPKE_extract_scrpt.txt
+
+
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0001_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0002_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0003_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0004_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0005_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @RL0066_COPKE_extract_scrpt.txt
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @TUD002_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @TUD003_COPKE_extract_scrpt.txt
+
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @TD003_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @TD004_COPKE_extract_scrpt.txt
+sqlplus DATAEXTRAMGR/tTEgBEpQVuxu#_23r5CcBg@MIGSTG @TD002_COPKE_extract_scrpt.txt
+
+ 
+ 
+grep "02600001064101" /u01/extracts/FINCORE/outputs/CASA/CS005/ODA/CS005_ODA.txt
+
+grep "02600001135303" /u01/extracts/FINCORE/outputs/CASA/CS005/ODA/CS005_ODA.txt
+
+ 
+ 
+grep SSP2103 CS005_ODA.txt > CS005_ODA_2103_SSP.txt
+
+
+
+ 
+ 
+ 
+ 
+ 

@@ -1,0 +1,69 @@
+What has been done ON gpg.
+
+Login to server as gpg user. Password: cJHwwL9z
+check if there are encryption keys
+cd gpghome/bin
+
+set environment by running:
+
+./libgpgora.env
+
+ 
+
+gpg --list-keys
+
+Delete Current encryption keys
+gpg --delete-key cms_test_enc_key
+
+
+Generate encryption keys
+gpg --gen-key file_wallet
+
+gpg --gen-key password _wallet
+
+gpg --gen-key backup
+
+gpg --gen-key CardSuite
+
+ 
+
+The password/pass phrase use for all the above keys is Pass12345#
+
+● file_wallet – for encrypting online system old archived data (exported and deleted from the
+
+Oracle Database)
+
+● password_wallet – for password encryption in password.gpg file
+
+● backup – for backup purpose
+
+● CardSuite –for MPCS decryption which public part must be given to outer systems.
+
+ 
+
+Restart gpg
+cd gpghome/bin
+
+     ./gpg_agent_stop.sh
+
+    ./gpg_agent_start.sh
+
+    ./listener_stop.sh
+
+    ./listener_start.sh
+
+  
+
+When keys are generated, their passphrases (phrases that allow access to the keys) must be entered in the gpg-agent that holds passphrases in the RAM. For decryption private key is stored in the safe place and only access to it is using a Passphrase. Only Administrator knows a Passphrase and Card Suite modules can not decrypt files by themselves.         
+
+              preset-passphrase.sh file_wallet
+
+              preset-passphrase.sh password_wallet
+
+              preset-passphrase.sh backup
+
+              preset-passphrase.sh CardSuite
+
+ 
+
+When you run above, for passphrase part 1 put Pass and Part 2 put 12345#

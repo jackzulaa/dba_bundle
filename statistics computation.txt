@@ -1,0 +1,71 @@
+begin	
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'HLP_CRM_DELTA', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'HLP_CORE_DELTA', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'WASADMIN_CUSTOMER', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'PARTY_PTTB_PERSONALDETAILS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'PARTY_PTTB_ENTERPRISEDETAILS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'HLP_CUSTOMER_ADDRESS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'CUSTOMER_ADDRESS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'CUSTOMER_CONTACTS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'WASADMIN_ACCOUNT', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'PARTY_PTTB_PERSONNAMES', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'PARTY_PTTB_INDICATORSANDPREFERENCES', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'PARTY_PTTB_PARTYCLASSIFICATIONDTLS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'RELATED_PARTY_CORP', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'RELATED_PARTY_RETAIL', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'PARTY_PTTB_EMPLOYMENTDETAILS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'COPK_CUSTOMERUSERDEF', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'WASADMIN_LOANDETAILS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'WASADMIN_ACCOUNTSTATEMENT', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'WASADMIN_CREDITINTEREST', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'WASADMIN_DEBITINTEREST', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'COPKBI_BFUB_CUSTOMER', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'COPKBI_COOP_CUSTOMER', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG1', tabname =>'COPKBI_BFUB_ACCOUNT', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname =>'MIG_STG2', tabname =>'HLP_MIG_CUSTOMER', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt =>'FOR ALL COLUMNS SIZE AUTO');
+end;
+/
+
+---helper base tables statistics
+begin
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_SIGCAP_SIGNATORY', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_SIGCAP_ACCOUNT', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CUSTOMER_ACCOUNT_STATUS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_JOINT_ACCOUNT_MAP', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_JOINT_CUSTOMER_MAP', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_BLOCKED_REASON', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CRM_USERS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_EMPLOYEE', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_RELATIONSHIP', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CUSTOMER_CLASSIFICATION', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CONTACT', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CRM_IDS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CORP_CONTACT_PERSON', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'RC001_COPKE', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'STG_ALL_STAFF', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'RELATED_PARTY_RETAIL', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_BPD', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_ACCOUNT', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_BRANCH_REGION', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'CUSTOMER_ADDRESS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_RISKLEVELS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_CUSTOMER_OCCUPATION', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+	dbms_stats.gather_table_stats(ownname => 'MIG_STG1', tabname => 'HLP_JOINTS', estimate_percent =>DBMS_STATS.AUTO_SAMPLE_SIZE, method_opt => 'FOR ALL COLUMNS SIZE AUTO');
+end ;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

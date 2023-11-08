@@ -1,0 +1,26 @@
+cat gather_database_stats_full_MIGSTG.txt
+set echo on;
+spool /home/copdbmgr/scripts/logs/log_DATABASE_STATS_MIGSTG.log;
+alter session set nls_date_format='DD-MON-YY HH24:MI:SS';
+select sysdate from dual;
+select name from v$database;
+begin
+dbms_stats.gather_system_stats('EXADATA');
+end;
+/
+begin
+DBMS_STATS.GATHER_FIXED_OBJECTS_STATS;
+end;
+/
+begin
+DBMS_STATS.GATHER_SCHEMA_STATS('SYS');
+end;
+/
+EXEC DBMS_STATS.gather_database_stats;
+EXEC DBMS_STATS.GATHER_DICTIONARY_STATS;
+exec dbms_stats.gather_system_stats('EXADATA');
+exec DBMS_STATS.GATHER_FIXED_OBJECTS_STATS;
+/
+select sysdate from dual;
+spool off;
+exit;

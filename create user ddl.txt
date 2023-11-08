@@ -1,0 +1,173 @@
+set long 20000 longchunksize 20000 pagesize 0 linesize 1000 feedback off verify off trimspool on
+column ddl format a1000 
+begin
+   dbms_metadata.set_transform_param (dbms_metadata.session_transform, 'SQLTERMINATOR', true);
+   dbms_metadata.set_transform_param (dbms_metadata.session_transform, 'PRETTY', true);
+end;
+/
+
+alter system archive log current
+alter session  set nls_date_format="yyyy-mm-dd hh24:mi:ss"   ;
+select sequence#,first_time,next_time,applied,thread# from v$archived_log order by 3;
+ SET LONG 9000 -- to print the complete string 
+ SELECT DBMS_METADATA.GET_DDL('DB_LINK',a.db_link,a.owner) FROM dba_db_links a;
+					PKANIU
+
+variable v_username VARCHAR2(30); 
+exec :v_username := upper('COMMVLTUSR');
+select dbms_metadata.get_ddl('USER', u.username) AS ddl
+from   dba_users u
+where  u.username = :v_username
+union all
+select dbms_metadata.get_granted_ddl('TABLESPACE_QUOTA', tq.username) AS ddl
+from   dba_ts_quotas tq
+where  tq.username = :v_username
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('ROLE_GRANT', rp.grantee) AS ddl
+from   dba_role_privs rp
+where  rp.grantee = :v_username
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('SYSTEM_GRANT', sp.grantee) AS ddl
+from   dba_sys_privs sp
+where  sp.grantee = :v_username
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('OBJECT_GRANT', tp.grantee) AS ddl
+from   dba_tab_privs tp
+where  tp.grantee = :v_username
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('DEFAULT_ROLE', rp.grantee) AS ddl
+from   dba_role_privs rp
+where  rp.grantee = :v_username
+and    rp.default_role = 'YES'
+and    rownum = 1
+union all
+select to_clob('/* Start profile creation script in case they are missing') AS ddl
+from   dba_users u
+where  u.username = :v_username
+and    u.profile <> 'DEFAULT'
+and    rownum = 1
+union all
+select dbms_metadata.get_ddl('PROFILE', u.profile) AS ddl
+from   dba_users u
+where  u.username = :v_username
+and    u.profile <> 'DEFAULT'
+union all
+select to_clob('End profile creation script */') AS ddl
+from   dba_users u
+where  u.username = :v_username
+and    u.profile <> 'DEFAULT'
+and    rownum = 1  
+/
+
+
+
+grant select on CUSTOM.C_TXN_UPLD_MT  to COOPBANK_DATACENTER_ROLE ;
+grant select on  CUSTOM.C_TXN_UPLD_DT to COOPBANK_DATACENTER_ROLE ;
+
+
+alter session  set nls_date_format="yyyy-mm-dd hh24:mi:ss"
+
+alter profile SERVICE_ACCOUNTS limit PASSWORD_REUSE_TIME UNLIMITED;
+
+172.16.207.195:1522/COPIBPRD
+ select * from dba_profiles where profile='SERVICE_ACCOUNTS' and  RESOURCE_NAME in ('PASSWORD_REUSE_TIME') ; 
+
+
+set linesize 80 pagesize 14 feedback on trimspool on verify on
+set long 1000000 longchunksize 20000 pagesize 0 linesize 1000 feedback off verify off trimspool on
+column ddl format a1000
+
+begin
+   dbms_metadata.set_transform_param (dbms_metadata.session_transform, 'SQLTERMINATOR', true);
+   dbms_metadata.set_transform_param (dbms_metadata.session_transform, 'PRETTY', true);
+end;
+/
+
+ copkdrexomnitst-scan:1568/DFRPREP
+ copkdrexomnitst-scan:1568/DFRPRPRD
+ copkdrexomnitst-scan:1568/DFPRE
+
+variable v_role VARCHAR2(30);
+
+exec :v_role := upper('SCORE');
+
+select dbms_metadata.get_ddl('ROLE', r.role) AS ddl
+from   dba_roles r
+where  r.role = :v_role
+union all
+select dbms_metadata.get_granted_ddl('ROLE_GRANT', rp.grantee) AS ddl
+from   dba_role_privs rp
+where  rp.grantee = :v_role
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('SYSTEM_GRANT', sp.grantee) AS ddl
+from   dba_sys_privs sp
+where  sp.grantee = :v_role
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('OBJECT_GRANT', tp.grantee) AS ddl
+from   dba_tab_privs tp
+where  tp.grantee = :v_role
+and    rownum = 1
+/
+
+set linesize 80 pagesize 14 feedback on verify on
+
+
+
+
+variable v_role VARCHAR2(30);
+
+exec :v_role := upper('CBXROLE');
+
+select dbms_metadata.get_ddl('ROLE', r.role) AS ddl
+from   dba_roles r
+where  r.role = :v_role
+union all
+select dbms_metadata.get_granted_ddl('ROLE_GRANT', rp.grantee) AS ddl
+from   dba_role_privs rp
+where  rp.grantee = :v_role
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('SYSTEM_GRANT', sp.grantee) AS ddl
+from   dba_sys_privs sp
+where  sp.grantee = :v_role
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('OBJECT_GRANT', tp.grantee) AS ddl
+from   dba_tab_privs tp
+where  tp.grantee = :v_role
+and    rownum = 1
+/
+
+
+
+
+
+variable v_role VARCHAR2(30);
+
+exec :v_role := upper('&1');
+
+select dbms_metadata.get_ddl('ROLE', r.role) AS ddl
+from   dba_roles r
+where  r.role = :v_role
+union all
+select dbms_metadata.get_granted_ddl('ROLE_GRANT', rp.grantee) AS ddl
+from   dba_role_privs rp
+where  rp.grantee = :v_role
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('SYSTEM_GRANT', sp.grantee) AS ddl
+from   dba_sys_privs sp
+where  sp.grantee = :v_role
+and    rownum = 1
+union all
+select dbms_metadata.get_granted_ddl('OBJECT_GRANT', tp.grantee) AS ddl
+from   dba_tab_privs tp
+where  tp.grantee = :v_role
+and    rownum = 1
+/

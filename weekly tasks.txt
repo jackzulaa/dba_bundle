@@ -1,0 +1,324 @@
+https://serhatcelik.wordpress.com/2021/07/03/step-by-step-oracle-19c-data-guard-installation/
+Week 2
+--------------------------------------------------------------------
+1. Backup and restore of MY SQL replication  on slave 1
+2. Troubleshooting the  MSDTC on server SYBRIN
+3. Executing batches
+4. Monitoring and helth check of MSSQL and MYsql servers
+5. Reviewing of commvault backups and backup policies.
+6. Training on LMC for Finacle system architecture.
+7. Training at LMC for Clarity4D
+
+
+Week 3
+------------------------------------------------------------------
+1. Restore MYSQL replication  on slave 1
+2. Troubleshooting the DTC on server SYBRIN
+3. Monitoring and health check of MSSQL and MYsql servers  and SAP
+4. executing check clearing scripts.
+5. Reviewing of commvault backups and backup policies.
+6. Creating environment documentaion for M7 databases.
+7. Training on Finacle data integration and database administration. 
+
+---------------------------------------------------------------------------------------
+Week 4
+--------------------------------------------------------------------
+1. Migrating the Mwallet test,Development,and Sit to exadata preprod.
+2. Correcting the Sybrin idmsSysLog conversion errors.
+ 
+----------------------------------------------------
+WEEK 5
+---------------------
+1. Migrating the Mwallet database production to exadata
+2. Correcting the Card Upload database BinConfig table.
+3. Creation of Standby for the Mwallet On exadata DR.
+4. Creation of Oracle Enterprise manager cloud 13c
+5. Daily monitor of Mssql,Mysql and SAP HANA
+
+
+week 7
+- Running of daily batches and scripts 
+- Daily support of ITSM request
+- Addressing ITSM and BPMS requests
+- Supportning Finacle cycle 6 extration.
+- Refreshing the SMS schema on OMNI test environmnet
+- Support MPCS troubleshooting  
+
+week 8
+- upgrade pluto test mssql server tofrom server 2008 to server 2016.
+- Restore pluto test database.
+- Correct coposa error ERROR2022-11-07 03:32:30 – Failed to load transactions for processing : System.Data.SqlClient.SqlException (0x80131904): Login failed for user 'copsplit'.
+- Refresh database  for finacle cycle 6 validataion .
+- Support cycle 6 validation 
+- Migration of Mwallet to Exadata
+- Migration of USSD to Exadata.
+- Support ARCH  ISO upgrade  for pluto test.
+- Support Exadata  migration.
+- Daily support of ITSM request
+
+Week 9
+- Refresh the Finacle valididation environment
+- Checlist of the enviroment
+- Discorering the Finacle databases on New OEM
+- Suporting Finacle CBI Team
+- Restoring MYSQL slave 2
+- Creating of CBX CBI testing (CBXCBIUAT and CBXCBIPREP) databases and refreshing with production data.
+- Daily support of ITSM request
+- 
+Week 10
+ -ODI Failure 19th   troubleshooting and correction
+ -M8 Patching 
+ -Eloan batches got -1 error troubleshooting and resolution
+ -Executing batches
+ -SVDCSACCOMICR\SQL2008R2. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified) (Microsoft SQL Server, Error: -1
+ -RETAILCBIPREPROD weblogic integrator  connection issue
+ -Recover bfub DR replication.
+ -Deployment of DF
+ -Deployment of DH
+ -Support AVAYA E2E PREPARATION TESTING 
+ -Pesa link API support.
+ -Omni Airtel purchase troubleshooting support
+ -Support PesaLink 2.0 - RBX Performance testing
+
+
+Week 11
+-Support siem qradar database log collection and Integration.
+-Support instant cash  testing error  .
+-Support cyber source  database  sequence  error .
+-Refreshing SACCOCBISIT  database .
+-Refreshing SACCOCBIPREPROD  database  .
+-Creation of AGENCYDB database .
+-Upgrade  of ATM Recon fron SQL 2014 to SQL2016. 
+-Responding to ticket calls .
+-Daily monitoring of M7,MYsql,MSSQL servers and SAP HANA.
+-Resolving Interaction Tickets and BPMS requests.
+
+
+Week 12
+ - Recreation of BPMS standby SVDRPMAKERDBSTBY.
+ - Reconstructing  of BPMS Slave  SVDCPMAKERDB03 to sync with production.
+ - Support CBX-post deployment validation & new release deployment kick-off
+ - Supporting Finacle extration and spliting.
+ - Supporting pluto test database connection issue.
+ - Daily system monitor and support calls.
+ 
+
+Week 13
+ - Creation of KSL CDS self onboarding database.
+ - Support BPMS login issue.
+ - Running  batches and responding to support calls.
+ - Support upgrade of Teammate database and Team mate Reporting database
+ - Closing ITSM and BPMS tickets.
+ - Supporting extraction of Finacle cycle 7 
+ 
+
+Week 14
+Restore of CREDITSCORE CBI enviromment
+BFUB RESTORE REQUEST ON COPK FOR EOY RUN2
+BFUB RESTORE REQUEST ON COPK FOR EOY RUN3
+Cloning of loantracking database.
+Responding to ITSM and BPMS tickets.
+Doing BAU tasks.
+
+ 
+
+
+Week 15
+Support Cycle 7 extration.
+Tunning of databases.
+Storage optimization.
+Responding to ITSM and BPMS tickets
+End year troubleshooting.
+End of year restore.
+Support CBXCBI  integration to finacle.
+Support festive monitoring and issue resolution
+
+
+Week 16
+Responding to ITSM and BPMS tickets.
+Supporting BAU in running batches.
+support Statements- runtime exception error for CBX.
+BFUB RESTORE REQUEST ON COPK.
+Supporting Finacle migration scripts and batches.
+Support LMS-SIT EOD
+Support BANK SIT CBX-FINACLE ISSUES TRACK troubleshooting.
+
+
+Week 17
+Responding to ITSM and BPMS tickets.
+Support RBX - IFT Own account transfer Zero rating.
+Restore Opics database.
+Support Finacle data validation and extraction.
+Doing BAU Tasks.
+Support CBX-CBI  testing .
+
+
+
+
+WEEKLY TASKS (07-12/08/2023)
+--------------------------  
+Support OPENBANK TAP TAP MTO Optimization.
+Support CoffeeDSS development team.
+Support BAU tasks
+Support in refresh of south Sudan migration environment
+Suport in optimization of database monitoring scripts -- ongoing.
+Adding more servers and reviving oem agent on the M8 servers for accurate reports. -- ongoing
+Support IMT optimization.
+
+
+WEEKLY TASKS (14-19/08/2023)
+------------------------------  
+Support CBX CNR  deployment.
+Support Storage re-organization and cleanup.
+Support BAU tasks
+Support in optimizing monitoring with customized scripts.
+Suport in optimization of database monitoring scripts. 
+Support in Sybrin IPN troubleshooting.
+Support in rolling foward Mysql Slave2 replication.
+Support in Review and clenup of User who left the bank.
+
+
+WEEKLY TASKS (28-01/09/2023)
+------------------------------  
+Support Storage re-organization and cleanup.
+Support BAU tasks
+Support ITSM ORACLE HOME  error troubleshooting.
+Support To Deploy fixes on RTGS-SWIFT, Cardless, KRA Customs, KODRIS  and Coop Till.
+Support SIEM log collection error for SFI and CBX  .
+Support optimizing the oem monitoring and alert scripts  ongoing
+Refresh of  south Sudan BFUB enviroment
+Creation of Finacle Migration enviroment from BPD(FINMIG)
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+CREATE PLUGGABLE DATABASE AGENCYDB ADMIN USER PDBADMIN IDENTIFIED BY oracAdmin#123  ;
+
+172.16.214.32:1568/AGENCYDB
+ALTER TABLESPACE COPK_STG_TS  ADD DATAFILE '+DATADG1' SIZE 100M AUTOEXTEND ON NEXT 100M MAXSIZE UNLIMITED;
+  
+delete archivelog until time 'sysdate-4' ;
+ALTER TABLESPACE MH_TAB_TS ADD DATAFILE '+DATA' SIZE 1024M AUTOEXTEND ON MAXSIZE UNLIMITED;
+
+
+delete noprompt archivelog until time 'SYSDATE-30';
+
+ALTER SYSTEM SET DB_RECOVERY_FILE_DEST_SIZE = 250G SCOPE=BOTH SID='*';
+
+
+STARTUP NOMOUNT;
+ALTER DATABASE MOUNT STANDBY DATABASE;
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE DISCONNECT FROM SESSION;
+
+
+set linesize 500
+col NAME for a50
+select name, ROUND(SPACE_LIMIT/1024/1024/1024,2) "Allocated Space(GB)",round(SPACE_USED/1024/1024/1024,2) "Used Space(GB)",round(SPACE_RECLAIMABLE/1024/1024/1024,2) "SPACE_RECLAIMABLE (GB)" ,(select round(ESTIMATED_FLASHBACK_SIZE/1024/1024/1024,2)  from V$FLASHBACK_DATABASE_LOG) "Estimated Space (GB)" from V$RECOVERY_FILE_DEST;
+
+copkdrexomni-scan:1568/MGWDR
+
+srvctl start home -o $ORACLE_HOME -s $ORACLE_HOME/stophome.txt -node copkprdomni01
+
+srvctl start home -o $ORACLE_HOME -s $ORACLE_HOME/starthome.txt -node copkprdomni01
+
+
+MWALLETEXP   /backup/mwalet
+create or replace directory EXPORT_DIR  as '/backup/MWALLET/dumps';  
+
+impdp  directory=EXPORT_DIR dumpfile=exp_mwal20221109_%U.dmp logfile=imp_mwal20221109.log  TABLE_EXISTS_ACTION=replace schemas=MWALLET parallel=16
+STARTUP RESTRICT 
+expdp  directory=EXPORT_DIR dumpfile=exp_Ussd20221109_%U.dmp logfile=exp_ussd20221109.log  schemas=USSDUSR,SDU parallel=16
+
+Later, ALTER SYSTEM DISABLE RESTRICTED SESSION;
+
+
+DIRECTORY=EXPORT_DIR
+DUMPFILE=USSD_%U.DMP
+logfile=exp_ussd20221109.log
+SCHEMAS=DBV_OWNER,DBV_ACCTMGR,USSDUSR,COMMVLTUSR,BIUSER,QRADAR,SDU,SMULE,JAKOTH,JAREBA,KRONO,FYUSUF,BKIVUI,CKINANDU,HRUTTO,AKIPLAGAT,PMBOROKI,GMUTUNGA,LVINYA,JKISHIRA,KKIMENDE,PABWOGA,JNYANJUI,CNNJUGUNA,WTONGI        
+CLUSTER=NO
+PARALLEL=16
+
+ ORA-20200: Database/Instance  does not exist in
+
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE DISCONNECT FROM SESSION;
+select SEQUENCE#,FIRST_TIME,APPLIED from V$ARCHIVED_LOG order by 1 asc  ;
+
+BEGIN
+	dbms_auto_task_admin.disable();
+END;
+/
+
+@$ORACLE_HOME/rdbms/admin/utlrp.sql
+@$ORACLE_HOME/rdbms/admin/utlrp.sql   ---compile invalid object        
+@$ORACLE_HOME/rdbms/admin/awrrpt.sql     --awr
+@$ORACLE_HOME/rdbms/admin/addmrpt.sql   --addm
+
+check for invalid objects count
+EXEC DBMS_STATS.gather_database_stats;
+EXEC DBMS_STATS.gather_system_stats;
+EXEC DBMS_STATS.gather_fixed_objects_stats;
+
+ALTER TABLESPACE MH_TAB_TS ADD DATAFILE  '+DATAC3' SIZE 31G AUTOEXTEND ON NEXT 1024M MAXSIZE UNLIMITED;
+
+CREATE USER 'CHERUIYOTG'@'%' IDENTIFIED BY '';
+GRANT USAGE ON *.* TO 'CHERUIYOTG'@'%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+GRANT SELECT, INSERT, UPDATE, CREATE, ALTER, EXECUTE ON `estatemanager`.* TO 'CHERUIYOTG'@'%';
+
+
+ SELECT distinct USERNAME FROM V$SESSION;
+ALTER DISKGROUP FRAHCDG11 RESIZE ALL;
+
+alter diskgroup DATADEV resize all rebalance power 64 ;
+
+alter tablespace TEMP add tempfile '+DATAC2' size 1024M autoextend on next 1024M maxsize unlimited;
+alter tablespace TEMP add tempfile '+DATAC2' size 1024M autoextend on next 1024M maxsize unlimited;
+
+ select TABLESPACE_NAME "TEMP TBS NAME",bytes/(1024*1024) "SIZE(MBs)",BYTES_USED/(1024*1024) "BYTES USED(MBs)",BYTES_FREE/(1024*1024) "BYTES FREE(MBs)" from sys.V_$TEMP_SPACE_HEADER,v$tempfile;
+
+
+select a.sid||'|'|| a.serial#||'|'|| a.process
+ from v$session a, v$locked_object b, dba_objects c
+ where b.object_id = c.object_id
+ and a.sid = b.session_id;
+ and OBJECT_NAME=upper('DM_VAL_CS001_FIN');
+ 
+ 
+ 
+ SELECT a.GROUP#,a.THREAD#,a.SEQUENCE#,a.ARCHIVED,a.STATUS,b.MEMBER AS FILE_NAME,(a.BYTES/1024/1024) AS SIZE_MB FROM v$log a JOIN v$logfile b ON a.Group#=b.Group#  ORDER BY a.GROUP#;
+
+
+
+ALTER SYSTEM KILL SESSION '' IMMEDIATE;
+
+SELECT * FROM table(DBMS_XPLAN.DISPLAY_AWR('a3atgm1h42wxu'));
+
+
+timedatectl | grep "Time zone"
+
+Q2 Task summary
+-----------------------------------------------------------------------------
+1.Support migration of BFUB to Finacle Core Banking system.
+2.Support the hypercare of Finacle Core banking System.
+3.Support Integraion of CBX to Finacle.
+4.Support in extration of the following modules for finacle migration(CASA,LOAN,TUD,TD and TTUM files).
+5.Support in creation of Finacle pre-migration Environments from BFUB.
+6.Support in automation of Finacle extration scripts.
+7.Creation of Tibco,SOA and SOALOG for Finacle enviromment.
+8.Re-creation of BPMS cluster replication.
+9.Space managemnt for varius production databases.
+10.Support in end user creation and privillage managements  .
+11.Support OMNI intergration with finacle.
+12.Support in extration of Signatures files for integration with Finacle.
+13.Support in running finacle scripts after approval.
+14.Support in clossing BPMS and ITSM tickets.
+15. Suporting new team members in integrating with the bank

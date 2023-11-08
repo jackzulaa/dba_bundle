@@ -1,0 +1,391 @@
+As a matter of fact, Grid Infrastructure 19c should be already installed on both standby nodes, database software installation should be installed as well, you don’t have to create a database.
+
+Step 1: Modify the tnsnames.ora file [On both Primary nodes]:
+
+ 
+This is to add two tnsentries, one for Primary DB “ORCL” and another for the Standby DB “ORCLDR”.
+# vi /u01/oracle/19c/network/admin/tnsnames.ora
+
+ORCL =
+(DESCRIPTION =
+(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.10.1)(PORT=1521))
+(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.10.2)(PORT=1521))
+(CONNECT_DATA =
+(SERVER = DEDICATED)
+(SERVICE_NAME = orcl)
+)
+)
+
+ORCLDR=
+(DESCRIPTION=
+(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.1)(PORT=1521))
+(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.2)(PORT=1521))
+(CONNECT_DATA =
+(SERVER = DEDICATED)
+(SERVICE_NAME = ORCLDR)
+)
+)
+
+Note: You can also Specify (UR=A) option next to service_name to connect to an instance in NOMOUNT mode: [this can work as an alternative to register the service statically with the listener, but it is not guaranteed to work all the time]
+ORCLDR=
+(DESCRIPTION=
+(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.1)(PORT=1521))
+(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.2)(PORT=1521))
+(CONNECT_DATA =
+(SERVER = DEDICATED)
+(SERVICE_NAME = ORCLDR)
+(UR=A)
+)
+)
+
+Step 2: Modify listener.ora: [On both Primary nodes]
+
+To statically register the local instance SID:
+[On Primary node1]
+# vi /u01/grid/19c/network/admin/listener.ora
+
+SID_LIST_LISTENER =
+(SID_LIST =
+(SID_DESC = (GLOBAL_DBNAME = orcl1) (ORACLE_HOME = /u01/oracle/19c) (SID_NAME = orcl1))
+)
+
+# lsnrctl reload listener
+
+[On Primary node2]
+# vi /u01/grid/19c/network/admin/listener.ora
+
+SID_LIST_LISTENER =
+(SID_LIST =
+(SID_DESC = (GLOBAL_DBNAME = orcl2) (ORACLE_HOME = /u01/oracle/19c) (SID_NAME = orcl2))
+)
+
+# lsnrctl reload listener
+
+Step 3: Modify tnsnames.ora  [On both Standby nodes]
+
+This is to add two tnsentries, one for Primary DB “ORCL” and another for the Standby DB “ORCLDR”.
+# vi /u01/oracle/19c/network/admin/tnsnames.ora
+
+ORCL =
+(DESCRIPTION =
+(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.10.1)(PORT=1521))
+(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.10.2)(PORT=1521))
+(CONNECT_DATA =
+(SERVER = DEDICATED)
+(SERVICE_NAME = orcl)
+)
+)
+
+ORCLDR=
+(DESCRIPTION=
+(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.1)(PORT=1521))
+(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.2)(PORT=1521))
+(CONNECT_DATA =
+(SERVER = DEDICATED)
+(SERVICE_NAME = ORCLDR)
+)
+)
+
+Step 4: Modify listener.ora:  [On Standby node1]
+
+Statically register the local instance SID:
+# vi /u01/grid/19c/network/admin/listener.ora
+
+SID_LIST_LISTENER =
+(SID_LIST =
+(SID_DESC = (GLOBAL_DBNAME = orcldr) (ORACLE_HOME = /u01/oracle/19c) (SID_NAME = orcldr1))
+)
+
+# lsnrctl reload listener
+
+* Do a TNSPING from both Primary and Standby nodes and make sure it’s working.
+# tnsping ORCL
+
+# tnsping ORCLDR
+
+Step 5: Make sure the Primary DB is in ARCHIVELOG & FORCE LOGGING modes: [On Primary DB]
+
+SQL> ARCHIVE LOG LIST;
+SQL> ALTER DATABASE FORCE LOGGING;
+SQL> ALTER DATABASE ARCHIVE LOG CURRENT;
+
+Make sure below 2 parameters are well configured to reflict the database name: [db_unique name on Primary DB should be orcl and on Standby DB it will  be orcldr]
+SQL> show parameter db_unique_name
+SQL> show parameter db_name
+
+Step 6: Log Shipping Setup: [On Primary DB]
+
+— Here you should use the DB_UNIQUE_NAME of each of primary and standby:
+SQL> ALTER SYSTEM SET LOG_ARCHIVE_CONFIG=’DG_CONFIG=(orcl,orcldr)’;
+SQL> ALTER SYSTEM SET LOG_ARCHIVE_DEST_2=’SERVICE=orcldr NOAFFIRM LGWR ASYNC delay=0 VALID_FOR=(all_logfiles,PRIMARY_ROLE) max_failure=0 reopen=300 net_timeout=90 DB_UNIQUE_NAME=orcldr‘;
+
+— Here you should use service names which you already configured earlier in tnsnames.ora:
+SQL> ALTER SYSTEM SET log_archive_dest_state_2=enable;
+SQL> ALTER SYSTEM SET remote_login_passwordfile=exclusive SCOPE=SPFILE;
+SQL> ALTER SYSTEM SET fal_server=’orcldr‘;
+SQL> ALTER SYSTEM SET fal_client=’orcl‘;
+SQL> ALTER SYSTEM SET standby_file_management=auto;
+
+Step 7: Create Standby REDOLOG Groups [On Primary DB]:
+
+Standby REDOLOG groups should be same number as regular REDOLOG groups +1 for each thread. e.g. if the primary database has 5 REDOLOG groups for each thread, then I should create 6 Standby REDOLOG groups for each thread.
+
+SQL> ALTER DATABASE ADD STANDBY LOGFILE THREAD 1
+GROUP 10 (‘+REDO1’) SIZE 1g,
+GROUP 11 (‘+REDO1’) SIZE 1g,
+GROUP 12 (‘+REDO1’) SIZE 1g,
+GROUP 13 (‘+REDO1’) SIZE 1g,
+GROUP 14 (‘+REDO1’) SIZE 1g,
+GROUP 15 (‘+REDO1’) SIZE 1g;
+
+SQL> ALTER DATABASE ADD STANDBY LOGFILE THREAD 2
+GROUP 16 (‘+REDO2’) SIZE 1g,
+GROUP 17 (‘+REDO2’) SIZE 1g,
+GROUP 18 (‘+REDO2’) SIZE 1g,
+GROUP 19 (‘+REDO2’) SIZE 1g,
+GROUP 20 (‘+REDO2’) SIZE 1g,
+GROUP 21 (‘+REDO2’) SIZE 1g;
+
+Step 8: Make sure the SNAPSHOT controlfile directory is exist and writable on both Primary nodes: [Even if the location is not shared between both nodes!]
+
+# rman
+RMAN> show all;
+RMAN> CONFIGURE SNAPSHOT CONTROLFILE NAME TO ‘/acfs/backup/sprint/snapcf_sprint.f‘;
+
+Step 9: Create the password file on [Primary node1]
+
+# orapwd file=/u01/oracle/19c/dbs/orapworcl1 password=Pass#0rd entries=10
+
+If the Password file is already exist on ASM, then Copy it to $ORACLE_HOME/dbs:
+
+[To make it seamless reset the SYS password on both Primary Instances]
+
+SQL> alter user sys identified by “Pass#0rd”;
+
+# srvctl config database -d orcl | grep pwd
++DATA/ORCL/PASSWORD/pwdorcl.256.1039797083
+
+# asmcmd cp +DATA/ORCL/PASSWORD/pwdorcl.256.1039797083 $ORACLE_HOME/dbs/orapworcl1
+
+Copy the password file to [Primary Node2]:
+# scp -p orapworcl1 oracle@192.168.10.2:/u01/oracle/19c/dbs/orapworcl2
+
+Copy the password file to [Standby Node1]
+# scp -p orapworcl1 oracle@10.1.10.1:/u01/oracle/19c/dbs/orapworcldr1
+
+Copy the password file to [Standby Node2]
+# scp -p orapworcl1 oracle@10.1.10.2:/u01/oracle/19c/dbs/orapworcldr2
+
+Step 10: Create the pfile on Target: [on Standby node1]
+
+# vi $ORACLE_HOME/dbs/initorcldr1.ora
+
+*.sga_target=5g
+*.pga_aggregate_target=2g
+*.control_files=+DATA,+REDO1,+REDO2
+*.db_create_file_dest=’+DATA’
+*.db_create_online_log_dest_1=’+REDO1′
+*.db_create_online_log_dest_2=’+REDO2′
+*.db_name=’orcldr’
+*.db_recovery_file_dest=’+RECO’
+*.db_recovery_file_dest_size=900g
+*.db_unique_name=’orcldr’
+*.remote_login_passwordfile=’exclusive’
+
+Step 11: Create Directory Structure: [Similar to what to be configured on PFILE and DBA_DIRECTORIES] [on both Standby nodes]
+
+[Standby node1]
+# mkdir -p /u01/oracle/admin/orcldr/adump
+# mkdir -p /u01/oracle/diag/rdbms/orcldr1
+
+[Standby node2]
+# mkdir -p /u01/oracle/admin/orcldr/adump
+# mkdir -p /u01/oracle/diag/rdbms/orcldr2
+
+Step 12: Start the new orcldr1 instance in nomount mode with pfile: [on Standby nodes1]
+
+# cd $ORACLE_HOME/dbs
+# export ORACLE_SID=orcldr1
+# sqlplus “/ as sysdba”
+SQL> startup nomount pfile=initorcldr1.ora
+
+Step 13: Test the connection between Primary and Standby instances:
+
+— From [Primary node1] try to connect to the standby instance:
+SQL> conn sys/Pass#0rd@orcldr as sysdba
+connected
+
+— From [Primary node2] try to connect to the standby instance:
+SQL> conn sys/Pass#0rd@orcldr as sysdba
+connected
+
+— From [Standby node1] try to connect to the Primary DB:
+SQL> conn sys/Pass#0rd@orcl as sysdba
+connected
+
+ 
+Step 14: Create the RMAN Duplicate script: [On Primary node1]
+
+# vi ~/duplicate_orcldr_standby.rman
+
+run {
+allocate channel disk1 type disk;
+allocate channel disk2 type disk;
+allocate channel disk3 type disk;
+allocate auxiliary channel aux1 type disk;
+allocate auxiliary channel aux2 type disk;
+allocate auxiliary channel aux3 type disk;
+duplicate target database for standby from active database USING COMPRESSED BACKUPSET
+spfile
+parameter_value_convert ‘ORCL‘,’ORCLDR‘
+set db_name=’orcl‘
+set db_unique_name=’orcldr‘
+set cluster_database=’FALSE’
+set control_files=’+DATA’,’+REDO1′,’+REDO2‘
+set db_create_file_dest=’+DATA‘
+set db_create_online_log_dest_1=’+REDO1‘
+set db_create_online_log_dest_2=’+REDO2‘
+set db_name=’orcl‘
+set db_recovery_file_dest=’+RECO‘
+set db_recovery_file_dest_size=’900G’
+set sga_target=’5g’
+set db_cache_size=’2g’
+set shared_pool_size=’1g’
+set pga_aggregate_target=’2g’
+set remote_login_passwordfile=’exclusive’
+set instance_number=’1′
+set audit_file_dest=’/u01/oracle/admin/orcldr/adump‘
+set diagnostic_dest=’/u01/oracle’
+set db_file_name_convert=’+DATA/orcl/datafile’,‘+DATA/orcldr/datafile’,‘+DATA/orcl/tempfile’,‘+DATA/orcldr/tempfile‘
+set log_file_name_convert=’+REDO1/orcl/onlinelog’,‘+REDO1/orcldr/onlinelog’,‘+REDO2/orcl/onlinelog’,’+REDO2/orcldr/onlinelog‘
+set db_create_file_dest=’+DATA‘
+set fal_client=’orcldr‘
+set fal_server=’orcl‘
+set standby_file_management=’AUTO’
+set log_archive_config=’dg_config=(orcldr,orcl)’
+set log_archive_dest_2=’SERVICE=orcl NOAFFIRM LGWR ASYNC delay=0 VALID_FOR=(all_logfiles,PRIMARY_ROLE) max_failure=0 reopen=300 net_timeout=90 DB_UNIQUE_NAME=orcl‘;
+}
+
+Note: Using COMPRESSION with duplicate command will speed up the duplicate by 200% in average]
+
+Step 15: Run the Duplicate operation: [From Primary node1]
+
+Note: Don’t connect “TARGET /” nor “AUXILIARY /”, you have to connect using ID and password and SERVICE NAME i.e: sys/Pass#0rd@ORCLDR
+
+# export ORACLE_SID=orcl1
+# nohup $ORACLE_HOME/bin/rman target sys/Pass#0rd@ORCL auxiliary sys/Pass#0rd@ORCLDR cmdfile=~/duplicate_orcldr_standby.rman | tee ~/duplicate_standby.log 2>&1 &
+
+Step 16:  Recover the Standby DB: [on Standby node1]
+
+SQL> SHUTDOWN IMMEDIATE
+SQL> STARTUP
+
+Note: The database will not open unless it apply all the pending archivelogs. [This happens AUTOMATICALLY]
+
+Step 17: Disable log_archive_dest_state_2 & 3: [on Standby DB]
+
+SQL> ALTER SYSTEM SET log_archive_dest_state_2=defer;
+SQL> ALTER SYSTEM SET log_archive_dest_state_3=defer;
+SQL> ALTER SYSTEM SET dispatchers = “(PROTOCOL=TCP) (SERVICE=orcldrXDB)”;
+
+Step 18: Create Standby REDOLOG Groups [on Standby DB]:
+
+Same number of Standby REDOLOG groups on Primary should be created on Standby DB as well:
+
+SQL> RECOVER MANAGED STANDBY DATABASE CANCEL;
+
+SQL> ALTER DATABASE ADD STANDBY LOGFILE THREAD 1
+GROUP 10 (‘+REDO1’) SIZE 1g,
+GROUP 11 (‘+REDO1’) SIZE 1g,
+GROUP 12 (‘+REDO1’) SIZE 1g,
+GROUP 13 (‘+REDO1’) SIZE 1g,
+GROUP 14 (‘+REDO1’) SIZE 1g,
+GROUP 15 (‘+REDO1’) SIZE 1g;
+
+SQL> ALTER DATABASE ADD STANDBY LOGFILE THREAD 2
+GROUP 16 (‘+REDO2’) SIZE 1g,
+GROUP 17 (‘+REDO2’) SIZE 1g,
+GROUP 18 (‘+REDO2’) SIZE 1g,
+GROUP 19 (‘+REDO2’) SIZE 1g,
+GROUP 20 (‘+REDO2’) SIZE 1g,
+GROUP 21 (‘+REDO2’) SIZE 1g;
+
+Step 19: Turn ON Flashback [On Standby DB]:
+
+SQL> ALTER DATABASE FLASHBACK ON;
+SQL> RECOVER MANAGED STANDBY DATABASE NODELAY DISCONNECT;
+
+Note: “USING CURRENT LOGFILE” in the Recover command is not required anymore in 19c.
+
+Step 20: Restart log_archive_dest_state_2 [On Primary DB]:
+This to refresh the redo log shipping process on promary DB and fix any gap.
+
+SQL> ALTER SYSTEM SET log_archive_dest_state_2=defer;
+SQL> ALTER SYSTEM SET log_archive_dest_state_2=enable;
+
+Step 21: Start the Recovery process [On Standby DB]:
+
+SQL> RECOVER MANAGED STANDBY DATABASE NODELAY DISCONNECT;
+
+Step 22: Fix RMAN Settings [On Standby DB]:
+
+RMAN> CONFIGURE ARCHIVELOG DELETION POLICY TO APPLIED ON ALL STANDBY;
+RMAN> CONFIGURE BACKUP OPTIMIZATION ON;
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP ON;
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO ‘/acfs/backup/ORCLDR/%F‘;
+RMAN> CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE ‘SBT_TAPE’ TO ‘%F‘;
+RMAN> CONFIGURE SNAPSHOT CONTROLFILE NAME TO ‘/acfs/backup/ORCLDR/snapcf_orcldr.f‘;
+
+[On both Standby Nodes] Create the full path for the CONTROLFILE SNAPSHOT BACKUP: [It should be a shared location between both nodes, but if this not possible for any reason just create it locally on both nodes with the right permissions]
+# mkdir -p /acfs/backup/ORCLDR
+# chown oracle:oinstall -R /acfs/backup
+
+Step 23: Configure the archivelog deletion policy [On Primary DB]:
+
+RMAN> CONFIGURE ARCHIVELOG DELETION POLICY TO APPLIED ON ALL STANDBY;
+
+Step 24: Convert the standby to RAC DB [On Standby node1]:
+
+SQL>ALTER SYSTEM SET cluster_database=true SCOPE=SPFILE;
+ALTER SYSTEM SET cluster_database_instances=2 SCOPE=SPFILE SID=’*’;
+ALTER SYSTEM SET instance_number=1         SCOPE=SPFILE SID=’orcldr1′;
+ALTER SYSTEM SET instance_number=2           SCOPE=SPFILE SID=’orcldr2′;
+ALTER SYSTEM SET thread=1                  SCOPE=SPFILE SID=’orcldr1′;
+ALTER SYSTEM SET thread=2                  SCOPE=SPFILE SID=’orcldr2′;
+ALTER SYSTEM SET undo_tablespace=UNDOTBS1  SCOPE=SPFILE SID=’orcldr1′;
+ALTER SYSTEM SET undo_tablespace=UNDOTBS2  SCOPE=SPFILE SID=’orcldr2′;
+ALTER SYSTEM SET cluster_interconnects=’10.110.10.1‘ SCOPE=SPFILE SID=’orcldr1‘;
+ALTER SYSTEM SET cluster_interconnects=’10.110.10.2‘ SCOPE=SPFILE SID=’orcldr2‘;
+ALTER SYSTEM SET local_listener='(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.10)(PORT=1521))’ sid=’orcldr1‘;
+ALTER SYSTEM SET local_listener='(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.10.11)(PORT=1521))’ sid=’orcldr2‘;
+
+Create the SPFILE on a shared location between Standby RAC Nodes which is +DATA:
+SQL> create pfile=’/u01/oracle/19c/dbs/initorcldr.ora’ from spfile;
+SQL> create spfile=’+DATA’ from pfile=’/u01/oracle/19c/dbs/initorcldr.ora’;
+
+Get the spfile full path on ASM using asmcmd to use it in the next step:
+# asmcmd ls -lst +DATA/ORCLDR/PARAMETERFILE
++DATA/ORCLDR/PARAMETERFILE/spfile.345.1040975313
+
+Register the database with clusterware services:
+# srvctl add database -db orcldr -oraclehome /u01/oracle/19c -dbtype RAC -spfile +DATA/ORCLDR/PARAMETERFILE/spfile.345.1040975313
+-role PHYSICAL_STANDBY -startoption open -stopoption immediate -diskgroup “DATA,REDO1,REDO2,RECO” -policy AUTOMATIC -verbose
+
+Register the instances with clusterware services:
+# srvctl add instance -db orcldr -instance orcldr1 -node ORCLDR_N1
+# srvctl add instance -db orcldr -instance orcldr2 -node ORCLDR_N2
+
+Shutdown the DB [on Standby node1]:
+SQL>  shutdown immediate;
+
+Test Startup/Stop of the Standby DB [On Both Standby nodes]
+# srvctl start database -db orcldr
+# srvctl stop  database -db orcldr
+# srvctl start database -db orcldr
+
+*Make sure the Redo log files is being shipped from Primary to Standby whenever any of the standby instances are down.
+
+Start the Recovery Process: [On any of Standby nodes]
+SQL> RECOVER MANAGED STANDBY DATABASE NODELAY DISCONNECT;
+
+

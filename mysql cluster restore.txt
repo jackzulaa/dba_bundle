@@ -1,0 +1,52 @@
+stop slave;
+change master to master_host='172.16.206.196'  Master_Log_Pos=336239061;
+
+CHANGE MASTER TO MASTER_HOST='172.16.206.196', MASTER_USER='repl', MASTER_PASSWORD='R3pl1c9t1_tbd0n', MASTER_LOG_FILE='mysql-bin.064696', MASTER_LOG_POS=166515549;
+
+CHANGE MASTER TO MASTER_HOST='172.16.206.196', MASTER_USER='repl', MASTER_PASSWORD='R3pl1c9t1_tbd0n', MASTER_LOG_FILE='mysql-bin.064696', MASTER_LOG_POS=166515549;
+
+
+
+binlog_position=mysql-bin.064696:166515549
+
+reset slave;
+
+
+*************************** 1. row ***************************
+             File: mysql-bin.061130
+         Position: 198104393
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+Executed_Gtid_Set:
+1 row in set (0.00 sec)
+
+
+
+
+[root@SVDCPMAKERDB03 ~]# cat /app/bpmsdatabase/mysql/master.info
+25
+mysql-bin.056611
+210442174
+172.16.206.196
+repl
+R3pl1c9t1_tbd0n
+3306
+60
+0
+
+
+
+
+
+0
+30.000
+
+0
+55755691-7853-11eb-a186-0050568e0ac7
+86400
+
+
+0
+
+
+[root@SVDCPMAKERDB03 ~]#

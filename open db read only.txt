@@ -1,0 +1,44 @@
+Open standby database in Readonly state in Active dataguard
+Following are the steps involved to open the DR environment in Read-only mode.
+
+1. Check the status of dataguard.
+
+select name,open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------
+ORCL      Mounted
+
+2. Cancel the media recovery on Standby database:
+
+alter database recover managed standby database cancel;
+
+3. Open the database in READONLY MODE:
+Note: Database is already in Mount state.
+
+ALTER DATABASE OPEN READ ONLY;
+
+4. Start media recovery with real-time log apply on Standby Database:
+
+alter database recover managed standby database using current logfile disconnect from session;
+
+5. Verify the Standby database status:
+
+select name,open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+ORCL      READ ONLY WITH APPLY
+--Check MRP process is running
+select process,status,sequence# from v$managed_standby;
+
+ 
+PROCESS   STATUS        SEQUENCE#
+--------- ------------ ----------
+ARCH      CONNECTED             0
+MRP0      APPLYING_LOG       2134 --->>>>  MRP PROCESS 
+
+
+
+  1* select sequence#,first_time,next_time,applied,thread# from v$archived_log order by 3;
+SQL> select process,status,sequence# from v$managed_standby;

@@ -1,0 +1,26 @@
+SELECT c.owner,
+c.object_name,
+c.object_type,
+b.sid,
+b.serial#,
+b.inst_id,
+b.status,
+b.osuser,
+b.machine,'alter system kill session ''' || b.sid || ',' || b.serial# || ',@'|| b.inst_id ||''';'
+FROM gv$locked_object a, gv$session b, dba_objects c
+WHERE b.sid = a.session_id AND a.object_id = c.object_id and c.owner= 'TBAADM' and a.inst_id = b.inst_id;
+
+
+
+
+select s1.username || '@' || s1.machine
+|| ' ( THIS SID=' || s1.sid || ' )  is blocking '
+|| s2.username || '@' || s2.machine || ' ( SID=' || s2.sid || ' ) ' AS blocking_status
+from gv$lock l1, gv$session s1, gv$lock l2, gv$session s2
+where s1.sid=l1.sid and s2.sid=l2.sid
+and l1.BLOCK=1 and l2.request > 0
+and l1.id1 = l2.id1
+and l2.id2 = l2.id2 ;
+
+
+

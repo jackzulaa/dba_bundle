@@ -1,0 +1,16 @@
+begin
+for c in (select sid, serial# from v$session) loop
+   dbms_system.set_int_param_in_session(c.sid,c.serial#,'session_cached_cursors', 40000);
+end loop;
+end;
+/
+
+session_cached_cursors
+
+
+
+
+
+SELECT max(a.value) as highest_open_cur, p.value as max_open_cur FROM v$sesstat a,
+v$statname b, v$parameter p WHERE a.statistic# = b.statistic# and b.name = 'opened cursors current'
+and p.name= 'open_cursors' group by p.value;

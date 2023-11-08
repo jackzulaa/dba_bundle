@@ -1,0 +1,88 @@
+drop user ACADM cascade;
+drop user LAADM cascade;
+drop user PYADM cascade;
+drop user LMADM cascade;
+drop user VAADM cascade;
+drop user TBAADM cascade;
+drop user CRMUSER cascade;
+drop user DEDUPADM cascade;
+
+ACADM,
+LAADM,
+PYADM,
+LMADM,
+VAADM,
+TBAADM, 
+CRMUSER, 
+DEDUPADM
+
+
+
+#!/bin/bash
+export TZ=Africa/Nairobi
+export ORACLE_HOME=/u01/app/copdbmgr/product/19.0.0.0/dbhome_1
+export ORACLE_SID=FINPREPROD2
+export PATH=$ORACLE_HOME/bin:$PATH
+export EXPORT_FOLDER=/backup/DUMPS/COPKFIN/
+export wakati=`date '+%d%m%Y_%H%M%S'`
+expdp \'/ as sysdba\' full=n directory=dirfinpre  CLUSTER=N SCHEMAS=ACADM, LAADM, PYADM, LMADM, VAADM, TBAADM, CRMUSER, DEDUPADM  exclude=table_statistics dumpfile=$wakati-${ORACLE_SID}_ConfigSchemas.dmp exclude=TABLE:\"IN \(\'SIGNCUSTINFO\', \'SIGNMAINTENANCE\',\'SIGNOTHERINFO\'\)\" compression=all  logfile=$wakati-${ORACLE_SID}_Config_Schemas_exp.log
+
+
+
+impdp \'/ as sysdba\' full=n directory=restorebk dumpfile=13032023_095743-COPKFIN2_AFTREOD12%U.dmp CLUSTER=N SCHEMAS=ACADM,LAADM,PYADM,LMADM,VAADM,TBAADM,CRMUSER,DEDUPADM  parallel=8 logfile=imp_logFINPREPRODAFTEOD12_exp.log
+
+/backup/DUMPS/COPKFIN/
+
+
+
+expdp \'/ as sysdba\' full=n directory=dirfinpre  CLUSTER=N   dumpfile=$wakati-${ORACLE_SID}_ConfigSchemas.dmp include=TABLE:\"IN \(\'SIGNCUSTINFO\', \'SIGNMAINTENANCE\',\'SIGNOTHERINFO\'\)\" compression=all
+								   ,
+expdp \'/ as sysdba\' full=n directory=dirfinpre dumpfile=Signature_20230312%U.dmp CLUSTER=N    TABLES=FINFADM.SIGNMAINTENANCE,FINFADM.SIGNCUSTINFO,FINFADM.SIGNOTHERINFO parallel=16  logfile=Signature20230313explog.log  compression=all
+
+
+dirfinpre
+
+ACADM,
+LAADM,
+PYADM,
+LMADM,
+VAADM,
+TBAADM,
+CRMUSER,
+DEDUPADM,
+CUSTOM,
+
+
+
+
+SELECT 'ALTER SYSTEM KILL SESSION '''||sid||','||serial#||''' IMMEDIATE;' FROM v$session where username='CUSTOM' ;
+
+
+impdp \'/ as sysdba\' full=n directory=restorebk dumpfile=13032023_095743-COPKFIN2_AFTREOD12%U.dmp CLUSTER=N SCHEMAS=CUSTOMCOPKE  parallel=8 logfile=imp_logFINPREPRODAFTEOD12CUSTOMKE_exp.log
+
+
+
+
+
+
+
+
+SELECT
+O.OBJECT_NAME,
+S.SID,
+S.SERIAL#,
+P.SPID,
+S.PROGRAM,
+SQ.SQL_FULLTEXT,
+S.LOGON_TIME
+FROM
+GV$LOCKED_OBJECT L,
+DBA_OBJECTS O,
+V$SESSION S,
+V$PROCESS P,
+V$SQL SQ
+WHERE
+L.OBJECT_ID = O.OBJECT_ID
+AND L.SESSION_ID = S.SID
+AND S.PADDR = P.ADDR
+AND S.SQL_ADDRESS = SQ.ADDRESS;

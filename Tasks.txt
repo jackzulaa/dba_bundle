@@ -1,0 +1,45 @@
+
+Support Storage re-organization and cleanup.
+Support in refresh of south Sudan migration environment
+Adding more servers and reviving oem agent on the M8 servers for accurate reports.
+Automating monitoring of exadata database checklist and alerting. 
+Support Coffedemo application troubleshooting isssue.
+Support EOD for Finacle UAT/PRE-PROD after databases refresh.  
+Support in closing the ITSM and BPMS Tickets.
+Support in rolling foward Mysql Slave2 replication.
+Recreation of Sybrin standby.
+
+
+
+
+
+
+Extraction of south Sudan Retail files
+Extraction of south Sudan Cooperate files
+Support troubleshooting of RC00l data fail to upload
+Support CBX CNR  deployment.
+Extraction of CASA files for south Sudan.
+Refresh South Sudan BFUB database.
+Support in deployment  of ACQ_Authorization  on RTPS Production
+Support in extration of South Sudan  CASA and Loan.
+Support in Refreshing of South Sudan Migration Database.
+Support in Storage re-organization of production database.
+Support To Deploy fixes on RTGS-SWIFT, Cardless, KRA Customs, KODRIS  and Coop Till.
+Support OPENBANK TAP TAP MTO Optimization.
+Support CoffeeDSS development team.
+Support in troubleshooting of OMNI connectivity issue.
+Support in troubleshooting SACCO Engine Errors
+Support ITSM ORACLE HOME  error troubleshooting.
+Support IMT optimization.
+
+
+Suport in optimization of database monitoring scripts. 
+Support in Sybrin IPN troubleshooting.
+Support in Review and clenup of User who left the bank.
+Support SIEM log collection error for SFI and CBX  .
+Support in creation of automated comprehensive database server monitoring script.
+Recreation of the following standby databases BAASCNDR,MWALMSG
+Support in database storage space reorganization.
+Support in User creation and privillages management
+
+

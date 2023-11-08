@@ -1,0 +1,66 @@
+MIGSTG.co-opbank.co.ke
+
+
+
+MIGSTG.co-opbank.co.ke
+
+
+BEGIN
+  DBMS_SERVICE.create_service(
+    service_name => 'MIGSTG.co-opbank.co.ke',
+    network_name => 'MIGSTG.co-opbank.co.ke'
+  );
+END;
+/
+
+
+BEGIN
+  DBMS_SERVICE.start_service(
+    service_name => 'MIGSTG.co-opbank.co.ke'
+  );
+END;
+/
+
+
+
+BEGIN
+  DBMS_SERVICE.delete_service(
+    service_name => 'MIGSTG.co-opbank.co.ke'
+  );
+END;
+/
+
+BEGIN
+  DBMS_SERVICE.stop_service(
+    service_name => 'MIGSTG.co-opbank.co.ke'
+  );
+END;
+/
+
+srvctl add service -d FINVAL -s MIGSTG.co-opbank.co.ke -r FINVAL1 -a FINVAL2 -P BASIC
+srvctl status service -d FINVAL -s MIGSTG.co-opbank.co.ke
+srvctl start service -d FINVAL -s MIGSTG.co-opbank.co.ke
+
+ srvctl config service -d FINVAL -s MIGSTG.co-opbank.co.ke
+ srvctl modify service -d FINVAL -s MIGSTG.co-opbank.co.ke -P NONE
+ srvctl stop service –db FINVAL –service MIGSTG.co-opbank.co.ke –instance FINVAL2
+ srvctl start service -db FINVAL -service MIGSTG.co-opbank.co.ke -instance FINVAL2
+
+ 
+ 
+ 
+ copdbmgr@copkprdcont101:~$ srvctl remove service -db BASPRD -service COPMGRAM
+copdbmgr@copkprdcont101:~$ srvctl add service -db BASPRD -service COPMGRAM    -pdb COPMGRAM  -preferred BASPRD1
+PRCD-1278 : The service name COPMGRAM cannot be same as the pluggable database default service name COPMGRAM
+copdbmgr@copkprdcont101:~$ srvctl add service -db BASPRD -service COPMGRAMS    -pdb COPMGRAM  -preferred BASPRD1
+copdbmgr@copkprdcont101:~$ srvctl START service -db BASPRD -service COPMGRAMS
+copdbmgr@copkprdcont101:~$ srvctl add service -db BASPRD -service CUSTODYS -pdb CUSTODY -preferred BASPRD1
+copdbmgr@copkprdcont101:~$  srvctl START service -db BASPRD -service CUSTODYS
+copdbmgr@copkprdcont101:~$ srvctl remove service -db BASPRD -service COPBPM
+copdbmgr@copkprdcont101:~$ srvctl remove service -db BASPRD -service COPMGRAM
+PRCR-1001 : Resource ora.basprd.copmgram.svc does not exist
+copdbmgr@copkprdcont101:~$ srvctl remove service -db BASPRD -service CUSTODY
+copdbmgr@copkprdcont101:~$ srvctl remove service -db BASPRD -service IPENPROD
+copdbmgr@copkprdcont101:~$ srvctl remove service -db BASPRD -service RECRUIT
+copdbmgr@copkprdcont101:~$ srvctl stop database -db BASPRD
+copdbmgr@copkprdcont101:~$ srvctl start database -db BASPRD

@@ -1,0 +1,47 @@
+copdbmgr@copkdrutil201:~/checklist$ cat duplicate_COPKTRNG.sh
+export ORACLE_BASE=/u01/app/copdbmgr
+export ORACLE_HOME=/u01/app/copdbmgr/product/12.1.0.2/dbhome_1;export ORACLE_HOME
+export ORACLE_SID=COPKTRNG;export ORACLE_SID
+ORACLE_TERM=xterm; export ORACLE_TERM
+export PATH=$PATH:$ORACLE_HOME/bin
+export NLS_DATE_FORMAT='DD-MON-RRRR HH24:MI:SS';
+export DATE=$(date +%Y-%m-%d-%H:%M)
+rman target sys/g0DryU9xI3C@bfubdr1  auxiliary sys/g0DryU9xI3C@COPKTRNG  log=/export/home/copdbmgr/checklist/rman_COPK_DUP_${DATE}.log <<EOF
+run{
+duplicate target database for standby from active database nofilenamecheck dorecover;
+}
+exit;
+EOF
+
+
+begin
+for c in (select sid, serial# from v$session) loop
+   dbms_system.set_int_param_in_session(c.sid,c.serial#,'session_cached_cursors', 30000);
+end loop;
+end;
+/
+not easy on runtime  will throu erro
+
+begin
+execute dbms_stats.gather_table_stats(ownname => 'RTPS_4G', tabname =>'STAT_INFO', estimate_percent => DBMS_STATS.AUTO_SAMPLE_SIZE,method_opt => 'FOR ALL COLUMNS SIZE AUTO', cascade => TRUE);
+end;
+/
+	 224748 
+
+
+begin
+ for c in (select sid, serial# from v$session) loop
+  dbms_system.set_int_param_in_session(c.sid,c.serial#,'session_cached_cursors', 20000);
+ end loop;
+end;
+/
+
+
+begin
+ for c in (select sid, serial# from v$session) loop
+  dbms_system.set_int_param_in_session(c.sid,c.serial#,'session_cached_cursors', 60000);
+ end loop;
+end;
+/
+
+

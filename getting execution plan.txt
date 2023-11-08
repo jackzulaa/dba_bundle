@@ -1,0 +1,9 @@
+col trigger_name for a20
+col status for a10
+col triggering_event for a10
+select trigger_name,status,triggering_event from user_triggers where triggering_event like 'LOG%';
+
+
+select plan_table_output from table(dbms_xplan.display_cursor('d3a6jqtpgupcj',null,'basic'));
+select plan_table_output from table(dbms_xplan.display_cursor('cqw257r2k7a97',null,'basic'));
+select plan_table_output from table(dbms_xplan.display_cursor('buuuyasy5p3q7',null,'basic'));

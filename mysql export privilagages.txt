@@ -1,0 +1,1 @@
+mysql -B -N -e "select * from mysql.user;" > USER_PRIVILAGES.sql

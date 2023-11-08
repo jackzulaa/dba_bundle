@@ -1,0 +1,8 @@
+1,093,320 rows updated.
+
+Commit complete.
+
+
+
+alter system set cluster_interconnects='192.168.30.15:192.168.30.16' scope=spfile; 
+alter system set cluster_interconnects='192.168.30.17:192.168.30.18' scope=spfile;

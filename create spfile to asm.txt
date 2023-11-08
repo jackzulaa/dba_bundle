@@ -1,0 +1,1 @@
+create spfile='+DATAC2' from pfile='/home/copdbmgr/initCOPUAT1.ora';

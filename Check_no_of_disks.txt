@@ -1,0 +1,7 @@
+CHECK NUMBER OF DISKS IN ASM DISKGROUP
+=======================================
+
+select dg.name, d.total_mb, d.os_mb, count(1) num_disks
+from v$asm_diskgroup dg, v$asm_disk d
+where dg.group_number = d.group_number and d.total_mb>0
+group by dg.name, d.total_mb, d.os_mb;

@@ -1,0 +1,38 @@
+1. Place the physical standby database in MOUNT mode.
+
+RMAN>  SHUTDOWN IMMEDIATE;
+RMAN>  STARTUP MOUNT; 
+2. Stop the managed recovery processes on the physical standby database. 
+RMAN>  ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;    
+3. The RECOVER … FROM SERVICE command refreshes the standby data files and rolls them forward to the same point-in-time as the primary.
+RMAN> RECOVER DATABASE FROM SERVICE CHERRYDB NOREDO USING COMPRESSED BACKUPSET; 
+4. Shutdown standby database, startup nomount and restore control file
+RMAN> SHUTDOWN IMMEDIATE;
+RMAN> STARTUP NOMOUNT;
+RMAN> RESTORE STANDBY CONTROLFILE FROM SERVICE CHERRYDB; 
+5. If datafile location is different structure is different from primary, catalog datafiles
+and switch database to copy.  
+
+6.RMAN > Alter database mount;
+ recover database from service  'CHERRYDB';
+ 
+
+7. RMAN> catalog start with '+DATAC1/COPKSTBY/';
+
+
+catalog start with '+DATHCDG11/CHERRYDR/DATAFILE/';
+RMAN> switch database to copy;
+8. Clear standby redologs;
+9. Start media recovery;
+
+
+RUN
+{
+SET NEWNAME FOR DATAFILE 1 TO '+DATHCDG11/CHERRYDR/DATAFILE/system.2037.1083935511';
+RESTORE DATAFILE 1 FROM SERVICE CHERRYDB;
+}
+
+
+1762
+
+select name from v$datafile where file#=1762;

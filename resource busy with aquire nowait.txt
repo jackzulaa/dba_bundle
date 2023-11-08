@@ -1,0 +1,123 @@
+SELECT XIDUSN,OBJECT_ID,SESSION_ID,ORACLE_USERNAME,OS_USER_NAME,PROCESS from v$locked_object;
+
+
+SELECT d.OBJECT_ID, substr(OBJECT_NAME,1,20), l.SESSION_ID, l.ORACLE_USERNAME, l.LOCKED_MODE
+from   v$locked_object l, dba_objects d
+where  d.OBJECT_ID=l.OBJECT_ID;
+
+
+SELECT ADDR, KADDR, SID, TYPE, ID1, ID2, LMODE, BLOCK from v$lock;
+
+
+SELECT a.sid, a.saddr, b.ses_addr, a.username, b.xidusn, b.used_urec, b.used_ublk
+FROM   v$session a, v$transaction b
+WHERE  a.saddr = b.ses_addr;
+
+
+SELECT s.sid, l.lmode, l.block, substr(s.username, 1, 10), substr(s.schemaname, 1, 10),
+       substr(s.osuser, 1, 10), substr(s.program, 1, 30), s.command
+FROM   v$session s, v$lock l
+WHERE  s.sid=l.sid;
+
+
+SELECT  p.spid, s.sid, p.addr,s.paddr,substr(s.username, 1, 10), substr(s.schemaname, 1, 10),
+        s.command,substr(s.osuser, 1, 10), substr(s.machine, 1, 10)
+FROM    v$session s, v$process p
+WHERE   s.paddr=p.addr
+
+
+SELECT sid, serial#, command,substr(username, 1, 10), osuser, sql_address,LOCKWAIT,
+       to_char(logon_time, 'DD-MM-YYYY;HH24:MI'), substr(program, 1, 30)
+FROM   v$session;
+
+
+SELECT sid, serial#,  username, LOCKWAIT from v$session;
+
+
+SELECT v.SID, v.BLOCK_GETS, v.BLOCK_CHANGES, w.USERNAME, w.OSUSER, w.TERMINAL
+FROM   v$sess_io v, V$session w
+WHERE  v.SID=w.SID ORDER BY v.SID;
+
+
+SELECT * from dba_waiters;
+
+SELECT waiting_session, holding_session, lock_type, mode_held
+FROM   dba_waiters;
+
+
+SELECT
+  p.spid                      unix_spid,
+  s.sid                       sid,
+  p.addr,
+  s.paddr,
+  substr(s.username, 1, 10)   username,
+  substr(s.schemaname, 1, 10) schemaname,
+  s.command                   command,
+  substr(s.osuser, 1, 10)     osuser,
+  substr(s.machine, 1, 25)    machine
+FROM   v$session s, v$process p
+WHERE  s.paddr=p.addr
+ORDER BY p.spid;
+
+
+
+SELECT 'ALTER SYSTEM KILL SESSION '''||sid||','||serial#||''' IMMEDIATE;' FROM v$session where username='KADHOLA' ;
+
+col OWNER for a20
+col OBJECT_NAME for a30
+SELECT
+    a.sid,
+    a.serial#,
+	b.object_id
+FROM
+    v$session        a,
+    v$locked_object  b,
+    dba_objects      c
+WHERE
+        b.object_id = c.object_id
+    AND a.sid = b.session_id  ;
+    ---AND object_name = 'CS014_COPKE';  
+
+col OWNER for a20
+col OBJECT_NAME for a30
+
+						  
+      2727      34085     
+      2727      34085     
+
+
+select OBJECT_NAME,OWNER from dba_objects where OBJECT_ID in('130813','130821','130830');
+
+
+
+SET LINESIZE 500
+SET PAGESIZE 1000
+SET VERIFY OFF
+COLUMN owner FORMAT A20
+COLUMN username FORMAT A20
+COLUMN object_owner FORMAT A20
+COLUMN object_name FORMAT A30
+COLUMN locked_mode FORMAT A15
+SELECT b.inst_id,b.session_id AS sid,NVL(b.oracle_username, '(oracle)') AS username,a.owner AS object_owner,a.object_name,Decode(b.locked_mode, 0, 'None',1, 'Null (NULL)',2, 'Row-S (SS)',3, 'Row-X (SX)',4, 'Share (S)',5, 'S/Row-X (SSX)',6, 'Exclusive (X)',b.locked_mode) locked_mode,b.os_user_name FROM   dba_objects a,gv$locked_object b WHERE  a.object_id = b.object_id ORDER BY 1, 2, 3, 4;
+
+
+
+
+
+
+
+ALTER SYSTEM KILL SESSION '4520,22777' IMMEDIATE;
+commvault -all list
+
+
+
+
+SQL> select OBJECT_NAME,OWNER from dba_objects where OBJECT_ID in('130813','130821','130830');
+
+OBJECT_NAME                    OWNER
+------------------------------ --------------------
+SIGNMAINTENANCE                FINFADM
+SIGNCUSTINFO                   FINFADM
+SIGNOTHERINFO                  FINFADM
+
+        

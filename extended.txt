@@ -1,0 +1,38 @@
+For non-CDB:
+
+SHUTDOWN IMMEDIATE;
+STARTUP UPGRADE;
+alter system set MAX_STRING_SIZE=EXTENDED;
+@?/rdbms/admin/utl32k.sql
+SHUTDOWN IMMEDIATE;
+STARTUP;
+
+
+For RAC system: 
+---------------------
+alter system set cluster_database = false scope = spfile;
+SHUTDOWN IMMEDIATE;         --- shutdown all the instances
+STARTUP UPGRADE;
+alter system set MAX_STRING_SIZE=EXTENDED;
+@?/rdbms/admin/utl32k.sql
+alter system set cluster_database = true scope = spfile;
+SHUTDOWN IMMEDIATE;
+STARTUP               --- or you can use srvctl to start the database.
+
+
+
+UPDATE tbaadm.gam SET ENTITY_CRE_FLG='Y' where ENTITY_CRE_FLG='N';
+
+select count(1) from tbaadm.gam SET ENTITY_CRE_FLG='Y' where ENTITY_CRE_FLG='N';
+
+
+
+ORA-01441: cannot decrease column length because some value is  too big
+
+
+BEGIN
+  DBMS_SERVICE.start_service(
+    service_name => 'MIGSTG.co-opbank.co.ke'
+  );
+END;
+/

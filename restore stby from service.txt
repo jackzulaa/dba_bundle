@@ -1,0 +1,105 @@
+Following steps done for Recovery the Standby database to make them sync with RECOVER .. FROM SERVICE Command:
+1. Identified the gap between both Primary and Standby Site:
+Run the following command on both primary and standby DB to identified the out of sync.
+
+-- On Standby and primary both
+-- Check SCN difference of DB
+SELECT CURRENT_SCN FROM V$DATABASE;
+
+--Check SCN difference of Files
+select HXFIL File_num,substr(HXFNM,1,40),fhscn from x$kcvfh;
+
+On Standby DB:
+1. Stop the replication service MRP on Standby Database:
+
+-- On Standby
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+
+2. Shutdown the database and open in mount state:
+
+-- On Standby
+Shutdown immediate
+Startup mount
+
+3. Connect with the Standby Server through RMAN
+
+-- On Standby
+[oracle@localhost ~]$ rman target user/pwd
+Recovery Manager: Release 12.1.0.1.0 - Production on Mon Mar 9 18:22:52 2015
+Copyright (c) 1982, 2013, Oracle and/or its affiliates. All rights reserved.
+connected to target database: PRIM (DBID=4165840403, not open)
+
+4. After connected to Standby Start the recover command:
+Note: Verified the Service name with tnsping command go to primary Server.
+
+--On Standby with Tnsnames of Primary DB
+RMAN> recover database from service prim noredo using compressed backupset;
+
+5. After completion, check the SCN for the files for both production and Standby Server:
+
+-- On Both Primary and Standby
+--Check SCN difference of Files, it should be equal.
+select HXFIL File_num,substr(HXFNM,1,40),fhscn from x$kcvfh;
+
+6. Now SCN number of control file is lower than Primary DB, for sync them open standby in nomount state.
+
+--On Standby
+SHUTDOWN IMMEDIATE;
+STARTUP NOMOUNT;
+
+7. Restore standby control file at nomount stage by using service PRIMARY.
+
+-- On Standby
+-- RESTORE STANDBY CONTROLFILE FROM SERVICE ;
+RMAN> restore standby controlfile from service COPKFIN;
+
+RMAN> alter database mount;
+
+8. After restore control file, Verify the path is same as primary control file as present in Standby Server:
+
+-- On Standby
+alter database mount;
+--Verfied the path of data files
+report schema;
+
+9. If location/name of data file is different in Primary than standby. If same location then skip this steps.
+If path is different then you have to catalog new location and run SWITCH command for update location.
+Note: For different path, Use the CATALOG command and the SWITCH command to update all the data file names.
+
+-- On Standby
+-- catalog start with '';
+RMAN> Catalog start with '+DATADG4/SOASTBY';
+-- Fixes the location
+SWITCH DATABASE TO COPY;
+
+10. If any data files is added after upgrade in Primary then you have to replicate that.
+If not then skip this step.
+
+-- Check the last SCN changes happen at DB on STep 5
+SELECT file# FROM V$DATAFILE WHERE creation_change# >= 1984232;
+
+-- If you find any file id then you need to restore it.
+RUN
+{
+SET NEWNAME FOR DATABASE TO '//clone';
+RESTORE DATAFILE 21 FROM SERVICE prim;
+}
+
+11. If you need to rename the redo log files then use following commands:
+ALTER DATABASE CLEAR command to clear the log files in all redo log groups of the standby database.
+ALTER DATABASE RENAME FILE command to rename the redo log files.
+
+12. Start the recover process at standby database
+
+ALTER DATABASE OPEN READ ONLY;
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT FROM SESSION;
+
+Share this:
+
+
+
+RUN
+{
+SET NEWNAME FOR DATABASE TO '//clone';
+RESTORE DATAFILE 21 FROM SERVICE prim;
+}

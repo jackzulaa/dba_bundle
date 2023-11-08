@@ -1,0 +1,31 @@
+mysqldump --all-databases --single-transaction --quick --lock-tables=false > full-backup-$(date +%F).sql -u root -p
+
+
+mysql -u root estatemanager <  /backup/estatemanager23may2023v1.sql
+
+dbv_owner/ySg3x#5GnqZMTCH_zPW6
+
+dbv_acctmgr IDENTIFIED BY ySg3x#5GnqZMTCH_zPW6
+
+ 
+
+Disable/Enable realm using below
+
+ 
+
+begin
+
+DVSYS.DBMS_MACADM.UPDATE_REALM(realm_name => 'FINPREPROD REALM',
+
+description => 'REALM TO PROTECT COREDB OBJECTS',
+
+enabled => 'N',
+
+audit_options => 0,
+
+realm_type =>'0' );
+
+end;
+/
+
+ 

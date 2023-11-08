@@ -1,0 +1,31 @@
+Follow below steps  
+
+=>
+
+ 
+
+=>DISABLE REALM
+
+ 
+
+begin
+
+DVSYS.DBMS_MACADM.UPDATE_REALM(realm_name => 'COREDB REALM',
+
+description => 'REALM TO PROTECT COREDB OBJECTS',
+
+enabled => 'Y',audit_options => 0,realm_type =>'0' ); 
+end;
+/
+
+=>GRANT DV_PATCH_ADMIN TO SYS;
+
+ revoke DV_PATCH_ADMIN from SYS;
+
+=>exit
+
+ 
+
+=> sqlplus / as sysdba
+
+ 

@@ -1,0 +1,72 @@
+$ORACLE_HOME/network/admin/sqlnet.ora
+
+create pluggable database DFRNEW admin user pdbadmin identified by oracle_123;
+
+select distinct
+a.sid "waiting sid"
+, d.sql_text "waiting SQL"
+, a.ROW_WAIT_OBJ# "locked object"
+, a.BLOCKING_SESSION "blocking sid"
+, c.sql_text "SQL from blocking session"
+from gv$session a, gv$active_session_history b, gv$sql c, gv$sql d
+where a.event='enq: TX - row lock contention'
+and a.sql_id=d.sql_id
+and a.blocking_session=b.session_id
+and c.sql_id=b.sql_id
+and b.CURRENT_OBJ#=a.ROW_WAIT_OBJ#
+and b.CURRENT_FILE#= a.ROW_WAIT_FILE#
+and b.CURRENT_BLOCK#= a.ROW_WAIT_BLOCK#;
+  update tbaadm.gam set bank_id='01' where acid='PA948591';
+select * from TBAADM.tables_table  where TABLE_ABBR='';
+select
+   c.owner,
+   c.object_name,
+   b.sid,
+   b.serial#,
+ from
+   gv$locked_object a ,
+   gv$session b,
+   dba_objects c
+where
+   b.sid = a.session_id
+and
+   a.object_id = c.object_id
+   and  c.owner='TBAADM' 
+   and  c.object_name='DAILY_TRAN_DETAIL_TABLE' ;
+   
+update tbaadm.gam set bank_id='01' where foracid='01010010031105' and sol_id='1105';
+   
+alter system kill session '11028,9317' immediate;
+
+
+SELECT 'FUNCTION' type, owner, object_name/*||'.'||procedure_name*/ object_name, /*null*/procedure_name column_name, null column_id, null data_type 
+FROM all_procedures 
+WHERE rownum <=50  and object_type = 'PACKAGE'   and procedure_name is not null 
+ and owner in('SYS',:1 )  and object_name = :2  
+ union all 
+select 'NUMBER' type, owner, object_name, name as column_name, null column_id, null data_type 
+FROM all_identifiers a
+ WHERE usage_context_id = 1
+   and usage = 'DECLARATION'
+   and type = 'VARIABLE'
+and object_type = 'PACKAGE' and rownum <=50
+ and owner = :3   and object_name = :4  
+ union all 
+SELECT 'COLUMN' type, owner, table_name object_name, column_name, column_id, data_type 
+FROM sys.all_tab_cols 
+WHERE hidden_column = 'NO' and rownum <=50 and owner = :5  and table_name = :6  
+ union all 
+SELECT object_type type, owner, object_name, null column_name, null column_id, null data_type 
+FROM all_objects 
+WHERE 	object_type = 'TABLE' and object_name not like 'BIN$%' and rownum <=50
+ and owner = :7  
+ union all 
+SELECT object_type type, owner, object_name, null column_name, null column_id, null data_type 
+FROM all_objects 
+WHERE 	object_type ='VIEW' and object_name not like 'BIN$%' and rownum <=50
+ and owner = :8  
+ union all 
+SELECT object_type type, owner  owner, object_name, null column_name, null column_id, null data_type 
+FROM all_objects 
+WHERE rownum <=50 and object_name not like 'BIN$%'  and object_type IN ('PROCEDURE','FUNCTION','PACKAGE','OPERATOR') 
+ and owner = :9  ;

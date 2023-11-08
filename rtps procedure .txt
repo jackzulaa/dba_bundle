@@ -1,0 +1,5 @@
+
+
+ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY "J9dk4s2Rfe37cj1";
+
+srvctl status service -db rtps

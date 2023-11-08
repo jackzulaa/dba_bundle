@@ -1,0 +1,32 @@
+select name as username,
+       create_date,
+       modify_date,
+       type_desc as type,
+       authentication_type_desc as authentication_type
+from sys.database_principals
+where type not in ('A', 'G', 'R', 'X')
+      and sid is not null
+      and name != 'guest'
+order by username;
+
+
+
+create '+DATAICT/BAS19C/PARAMETERFILE/spfile.861.1079281769';
+
+
+create pfile='/tmp/bas19c.ors' from spfile='+DATAICT/BAS19C/PARAMETERFILE/spfile.861.1079281769';
+
+
+
+USE MASTER
+GO
+ALTER DATABASE Main
+SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+DROP DATABASE Main
+GO
+
+
+05 22 * * * /u01/app/copdbmgr/scripts/CORONA_Bkp_Shell_L0.sh
+
+/u01/app/copdbmgr/scripts/CORONA_Bkp_Shell_L0.sh
+

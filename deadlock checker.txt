@@ -1,0 +1,39 @@
+How long a blocking session is blocking by other sessions:
+
+select blocking_session, sid, serial#, wait_class, seconds_in_wait
+from  v$session
+where blocking_session is not NULL
+order by blocking_session;
+
+Query shows the blocking session as well as all the blocked sessions
+
+select s1.username || '@' || s1.machine|| ' ( SID=' || s1.sid || ' )  is blocking '|| s2.username ||'@' || s2.machine || ' ( SID=' || s2.sid || ' ) ' AS blocking_status from gv$lock l1, gv$session s1, gv$lock l2,gv$session s2 where s1.sid=l1.sid and s2.sid=l2.sid and l1.BLOCK=1 and l2.request > 0 and l1.id1 = l2.id1 and l2.id2 = l2.id2;
+
+Check the Status of blocker or waiter
+
+Select sid , decode(block,0,'NO','YES') Blocker , decode (request ,0,'NO','YES')WAITER from v$lock where request>0 or block>0 order by block desc;
+ 
+
+Check the Query involved causing blocking
+
+select sid, sql_text
+from v$session s, v$sql q
+where sid in (68,81)
+and ( q.sql_id = s.sql_id or q.sql_id = s.prev_sql_id );
+
+Check the status of session is active or inactive
+
+SQL> select sid,serial#,USERNAME,status from v$session where sid in (4284);
+SID   SERIAL# USERNAME STATUS
+----- ------- -------- ----------
+1470  7233 APPS     INACTIVE
+1895  48684 APPS     ACTIVE
+
+Kill the inactive session with following command
+
+alter system kill session '1470,7233' immediate;
+
+
+
+
+ sid , decode(block,0,'NO','YES') Blocker , decode (request ,0,'NO','YES')WAITER from v$lock where request>0 or block>0 order by block desc;

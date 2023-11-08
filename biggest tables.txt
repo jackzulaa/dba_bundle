@@ -1,0 +1,37 @@
+column owner format a10;
+column table_name format a30;
+column "SIZE (GB)" format 99999.99;
+select * from (select owner, segment_name table_name, bytes/1024/1024/1024 "SIZE (GB)" from dba_segments where segment_type = 'TABLE' and segment_name not like 'BIN%' order by 3 desc) where rownum <= 10;
+
+
+
+
+
+
+
+ select distinct profile from dba_profiles;
+ 
+Create user FRAUD identified by  NUZJt#$6oBJsyYcMOj59y profile "SERVICE_ACCOUNTS";
+ 
+CBX
+-------------------
+grant select on CBX.OD_USERS_MB  to FRAUD;
+grant select on CBX.OD_TXN_MASTER  to FRAUD;
+grant select on cbx.oo_payment_txn_mt   to FRAUD;
+grant select on PPP.TXN_MST_PAY     to FRAUD;
+grant select on PPP.FILE_MST_PAY   to FRAUD;
+grant select on PPP.PS080TB    to FRAUD;
+
+RBX
+-------------------------
+grant select on df.od_txn_master to FRAUD;
+grant select on DF.TRANSFERS_TXN_MT to FRAUD;
+grant select on DF.OD_USERS_MB  to FRAUD;
+grant select on DF.od_thirdparty_transactions  to FRAUD;
+grant select on DF.customer_info  to FRAUD;
+grant select on df.branch_master  to FRAUD;
+grant select on ARX.TB_ARM_USER_MASTER to FRAUD ;
+grant select on ARX.IMS_USER_PSWD  to FRAUD ;
+ 
+ 
+ 

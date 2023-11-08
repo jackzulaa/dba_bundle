@@ -1,0 +1,76 @@
+Oracle 19c-Step by Step Manual Data Guard Failover
+
+
+Login in to Standby Server:-
+
+Step:1 Check the database role and open_mode
+Select name,open_mode,database_role from v$database;
+
+SQL> select database_role from v$database;
+
+DATABASE_ROLE
+----------------
+PHYSICAL STANDBY
+
+Step:2 Cancel the MRP process
+
+[oracle@standby dbs]$ ps -ef | grep mrp
+oracle 79976 1 0 03:19 ? 00:00:02 ora_mrp0_dbwr
+oracle 81638 81585 0 03:43 pts/2 00:00:00 grep --color=auto mrp
+[oracle@standby dbs]$ !sq
+sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Mar 16 03:43:18 2019
+Version 19.2.0.0.0
+
+Copyright (c) 1982, 2018, Oracle. All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.2.0.0.0
+
+SQL> recover managed standby database cancel;
+Media recovery complete.
+
+Step 3:
+
+The below commands will help to bring up standby as primary
+
+alter database recover managed standby database finish;
+
+SQL> recover managed standby database cancel;
+Media recovery complete.
+SQL> alter database recover managed standby database finish;
+
+Database altered.
+
+SQL> select name,open_mode,database_role from v$database;
+
+NAME        OPEN_MODE           DATABASE_ROLE
+--------- -------------------- ----------------
+DBWR        MOUNTED             PHYSICAL STANDBY
+
+SQL> alter database activate standby database;
+
+Database altered.
+
+Managed recovery process has been stopped between primary and standby database and standby becomes primary database.
+
+Step 5:
+
+Bounce your database and verify database name its open mode and its role.
+
+shutdown immediate;
+
+Startup
+
+Step 6:
+
+select name,open_mode,database_role from v$database;
+
+SQL> select database_role from v$database;
+
+DATABASE_ROLE
+----------------
+PRIMARY

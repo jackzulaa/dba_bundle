@@ -1,0 +1,60 @@
+How to drop the standby redo logs
+
+1. SET STANDBY_FILE_MANAGEMENT=’MANUAL’
+
+On Standby
+
+SQL> select name, open_mode, database_role from v$database;
+
+NAME      OPEN_MODE            DATABASE_ROLE
+--------- -------------------- ----------------
+APAC      READ ONLY WITH APPLY PHYSICAL STANDBY
+
+SQL> select * from v$logfile;
+
+
+SQL> alter database recover managed standby database cancel;
+
+Database altered.
+
+SQL> select name, open_mode, database_role from v$database;
+
+NAME      OPEN_MODE            DATABASE_ROLE
+--------- -------------------- ----------------
+APAC      READ ONLY            PHYSICAL STANDBY
+
+SQL> ALTER SYSTEM SET STANDBY_FILE_MANAGEMENT='MANUAL';
+
+2. Drop SRL On Standby
+SQL>  
+Note: If the status of standby redolog show the "clearing_current" then we cannot drop "clearing_current" status logs,and for that we have to sync with Primary and clear the log first before dropping as below
+
+SQL> alter database clear logfile group 4;
+
+Database altered.
+
+SQL> alter database drop standby logfile group 4;
+
+
+SQL> select * from v$logfile;
+SQL> select * from v$standby_log;
+SQL>
+
+3. SET STANDBY_FILE_MANAGEMENT='AUTO'
+
+SQL> ALTER SYSTEM SET STANDBY_FILE_MANAGEMENT='AUTO' SCOPE=BOTH;
+
+4. Enable MRP
+
+SQL> alter database recover managed standby database disconnect from session;
+
+SQL> select name, open_mode, database_role from v$database;
+
+NAME      OPEN_MODE            DATABASE_ROLE
+--------- -------------------- ----------------
+APAC      READ ONLY WITH APPLY PHYSICAL STANDBY
+
+SQL>
+
+  alter database drop  logfile group 14;
+21

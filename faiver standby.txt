@@ -1,0 +1,68 @@
+alter session  set nls_date_format="yyyy-mm-dd hh24:mi:ss";
+alter session  set nls_date_format="dd-mon-yyyy";
+alter session  set nls_date_format="dd-mm-yyyy";
+
+
+SELECT THREAD# ,sequence#, first_time, next_time, applied FROM v$archived_log  ORDER BY 3;
+
+
+alter session  set nls_date_format="dd-MON-yy";
+
+SEQUENCE# FIRST_TIM NEXT_TIME APPLIED
+---------- --------- --------- ---------
+    458043 09-APR-23 09-APR-23 YES
+
+SQL> recover managed standby database cancel;
+
+
+create restore  point before_change guarantee  flashback database;
+drop restore point before_change;
+SQL>
+SQL> alter database recover managed standby database finish;
+
+SQL> select name,open_mode,database_role from v$database;
+
+SQL> alter database activate standby database;
+
+SQL> select name,open_mode,database_role from v$database;
+SQL> shutdown immediate;
+
+
+SQL> startup
+SQL> select database_role from v$database;
+
+ SQL> Shutdown
+SQL> Startup mount
+SQL> Alter database noarchivelog;
+SQL> alter database open;
+gather  statistics
+
+
+MIG_STG2.TUD009_COPKE_INTEREST_ALL_12_LOAD
+
+
+
+ON PROD
+---------------------------
+COPK
+alter system set log_archive_dest_state_2=enable   ;
+COPFIN    
+alter system set log_archive_dest_4=DEFER ; 
+COPKTRNG
+alter system set log_archive_dest_state_4=DEFER ;
+
+
+
+SQL> !cat lag.sql
+COLUMN NAME FORMAT A24
+COLUMN VALUE FORMAT A16
+COLUMN DATUM_TIME FORMAT A24
+alter session set NLS_DATE_FORMAT='DD-MON-YYYY HH24:MISS';
+SELECT NAME, VALUE, DATUM_TIME FROM V$DATAGUARD_STATS;
+SELECT ARCH.THREAD# "Thread", ARCH.SEQUENCE# "Last Sequence Received",
+APPL.SEQUENCE# "Last Sequence Applied", (ARCH.SEQUENCE# - APPL.SEQUENCE#) "Difference" FROM
+(SELECT THREAD# ,SEQUENCE# FROM V$ARCHIVED_LOG WHERE (THREAD#,FIRST_TIME ) IN
+(SELECT THREAD#,MAX(FIRST_TIME) FROM V$ARCHIVED_LOG GROUP BY THREAD#)) ARCH,
+(SELECT THREAD# ,SEQUENCE# FROM V$LOG_HISTORY WHERE (THREAD#,FIRST_TIME ) IN
+(SELECT THREAD#,MAX(FIRST_TIME) FROM V$LOG_HISTORY GROUP BY THREAD#)) APPL
+WHERE ARCH.THREAD# = APPL.THREAD# ORDER BY 1;

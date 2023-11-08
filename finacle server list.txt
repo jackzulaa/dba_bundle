@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+Application servers IBM - DEV,SIT,UAT,TST,BPD,MIG  
+----------------------------------------------------------------------------
+172.16.20.95  DRCBSDEVAPP01   port 22
+172.16.20.97  DRCBSTRNAPP01  port 22
+172.16.20.106 DRCBSSIT  port 22
+172.16.20.96  Finacle_BPD_IBM  port 22
+172.16.20.105 DRCBSUATAPP01  port 22
+172.16.20.98  DRCBSMIGAPP01  port 22
+-----------------------------------------------------------------------
+ -------------------------------------------------------------------------------
+Pre-Prod Application  Servers Clusters:
+----------------------------------
+PR--
+172.16.201.85 PREPRDCBSHTTP01  port 22		
+172.16.201.88 PREPRDCBSHTTP02   port 22	
+172.16.201.86 PREPRDCBSAPP01 port 22	
+172.16.201.89 PREPRDCBSAPP02 port 22	
+172.16.201.87 PREPRDCBSCORE01	port 22	
+172.16.201.90 PREPRDCBSCORE02	port 22	
+DR---
+172.16.20.151 DRPREPRDCBSHTTP01 port 22
+172.16.20.162 DRPREPRDCBSHTTP02  port 22
+172.16.20.152 DRPREPRDCBSAPP01 port 22
+172.16.20.163 DRPREPRDCBSAPP02   port 22 
+172.16.20.153 DRPREPRDCBSMIS01	port 22
+172.16.20.154 DRPREPRDCBSCORE01 port 22
+172.16.20.164 DRPREPRDCBSCORE02  port 22
+====================================
+PRD
+  ---WAS|APP Layer---
+PRDCBSAPP01.CO-OPBANK.CO.KE    172.16.201.135 - wasadm,copdbmgr 
+/WASORACLE/app/copdbmgr/product/19.0.0.0/dbhome_1
+
+PRDCBSAPP02.CO-OPBANK.CO.KE    172.16.201.136 - wasadm,copdbmgr  
+DRPRDCBSAPP01.CO-OPBANK.CO.KE  172.16.201.137 - wasadm,copdbmgr  
+DRPRDCBSAPP02.CO-OPBANK.CO.KE  172.16.201.138 - wasadm,copdbmgr 
+PRDCBSCORE01.CO-OPBANK.CO.KE   172.16.201.139 - finadm,copdbmgr  
+PRDCBSCORE02.CO-OPBANK.CO.KE   172.16.201.140 - finadm,copdbmgr 
+DRPRDCBSCORE01.CO-OPBANK.CO.KE 172.16.201.141 - finadm,copdbmgr  
+DRPRDCBSCORE02.CO-OPBANK.CO.KE 172.16.201.142 - finadm,copdbmgr
+
+select count(1) from mig_stg2.cs003_copke; 
+select count(1) from mig_stg2.cs004_copke ;
+select count(1) from  mig_stg2.cs010_cope; 	
+select count(1) from mig_stg2.cs011_copke   ;
+
+select count (1) from MIG_STG2.cs003_copke where nvl(CORP_REP_CIF_ID,'XXX') not in (select contactskey from mig_stg2.contacts_dm8) and  nvl(cust_id,'ZZZ') not in (select contactskey from mig_stg2.contacts_dm8)
+and SOL_ID in (select sol_id from mig_stg2.SOLGRP where group_id in ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'));

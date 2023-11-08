@@ -1,0 +1,48 @@
+mstsc /v:10.1.33.37
+mstsc /v:172.16.201.111
+mstsc /v:172.16.204.138
+mstsc /v:172.16.204.215
+mstsc /v:172.16.204.224
+mstsc /v:172.16.204.32
+mstsc /v:172.16.204.52
+mstsc /v:172.16.204.92
+mstsc /v:172.16.204.93    login denied
+mstsc /v:172.16.204.96
+mstsc /v:172.30.12.101
+mstsc /v:192.168.21.6
+mstsc /v:DSTOREPROD
+mstsc /v:SVDCCASHDEPO3
+mstsc /v:SVDCCHECKERS
+mstsc /v:SVDCCOPOSADB
+mstsc /v:SVDCCRMDBSVR
+mstsc /v:SVDCFUNDWAREDB 
+mstsc /v:SVDCSFIDB02
+mstsc /v:SVDCSHAREPOINT1
+mstsc /v:SVDCSIGCAP01
+mstsc /v:SVDCSQL01
+mstsc /v:SVDCSQL02
+mstsc /v:SVDCSQL03
+mstsc /v:SVDCSQL04
+mstsc /v:SVDCSQL05
+mstsc /v:SVDCSQL06
+mstsc /v:SVDCSQL07
+mstsc /v:SVDCSQL08
+mstsc /v:SVDCSQLKSL01
+mstsc /v:SVDCSYBRINDB01
+mstsc /v:SVDCVOYG01
+mstsc /v:SVDCWEBRETRIEVE      firewall
+-------------------------------------------------
+
+ALTER DISKGROUP DATADG4 resize all  REBALANCE POWER 32; 
+
+
+
+TRUNCATE TABLE TBAADM.MMSG; 
+Insert into tbaadm.mmsg select * from tbaadm.mmsg@FROMCOPUAT;
+
+
+
+
+Z:\backup\main_20230121.bak';
+
+

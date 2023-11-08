@@ -1,0 +1,149 @@
+alter tablespace BF_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace UB_SMALL_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_SMALL_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace PARTY_DATA add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace PARTY_DATA add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace ACC_DATA add datafile size 300M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace ACC_DATA add datafile size 300M autoextend on next 100M maxsize unlimited
+alter tablespace UB_SMALL_DATA add datafile size 10240 autoextend on next 100M maxsize unlimited
+ORA-3214 signalled during: alter tablespace UB_SMALL_DATA add datafile size 10240 autoextend on next 100M maxsize unlimited...
+alter tablespace SYSTEM add datafile size 1024M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace SYSTEM add datafile size 1024M autoextend on next 100M maxsize unlimited
+alter tablespace UB_EXTRA_DATA add datafile size 2048M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_EXTRA_DATA add datafile size 2048M autoextend on next 100M maxsize unlimited
+alter tablespace UB_SMALL_DATA add datafile size 10240M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_SMALL_DATA add datafile size 10240M autoextend on next 100M maxsize unlimited
+alter tablespace COPK_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace COPK_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace USERS add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace USERS add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace BF_LOB add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_LOB add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace CBS_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace CBS_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace PARTY_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace PARTY_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace BF_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace COPK_IDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace COPK_IDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace COPK_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace COPK_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace USERS add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace USERS add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace BF_LOB add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_LOB add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace CBS_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace CBS_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace PARTY_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace PARTY_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace BF_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace COPK_IDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace COPK_IDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace COPK_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace COPK_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace USERS add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace USERS add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace BF_LOB add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_LOB add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace CBS_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace CBS_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace PARTY_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace PARTY_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace BF_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace BF_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace COPK_IDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace COPK_IDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_SMALL_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_SMALL_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace UB_SMALL_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_SMALL_INDX add datafile size 4096M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_TXN_INDX add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Completed: alter tablespace UB_LARGE_DATA add datafile size 32767M autoextend on next 100M maxsize unlimited
+Fri Apr 07 08:33:00 2023

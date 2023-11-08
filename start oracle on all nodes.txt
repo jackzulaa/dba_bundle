@@ -1,0 +1,29 @@
+
+srvctl status home -o $ORACLE_HOME -s $ORACLE_HOME/statushome.txt -node copkprdomni02
+
+
+srvctl stop home -o $ORACLE_HOME -s $ORACLE_HOME/statushome.txt -node copkprdomni01 -o immediate
+
+
+srvctl start home -o $ORACLE_HOME -s $ORACLE_HOME/statushome.txt -node copkdrexomnitst01
+
+
+select MAX(TO_CHAR (CREATED_DATE,'YYYY-MM-DD HH:MI:SS AM')) CREATED_DATE  from  DF.TRANSFERS_TXN_MT  where trunc(CREATED_DATE) = '27-JAN-2023';
+
+TES
+ infra dba,net
+
+select MAX(TO_CHAR (OT.CREATED_DATE,'YYYY-MM-DD HH:MI:SS AM')) CREATED_DATE  from  DF.TRANSFERS_TXN_MT OT  where trunc(CREATED_DATE) = '27-JAN-2023';
+
+alter database recover managed standby database disconnect from session;
+
+
+
+[copdbmgr@copkprdcbssoa01 ~]$ srvctl start home -o $ORACLE_HOME -s $ORACLE_HOME/statushome.txt -node copkprdcbssoa02
+
+
+
+:%s/^M//g
+
+:%s/.$//g
+
